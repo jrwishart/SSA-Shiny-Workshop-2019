@@ -1,0 +1,794 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="" xml:lang="">
+  <head>
+    <title>Shiny Applet Creation</title>
+    <meta charset="utf-8" />
+    <meta name="author" content="Dr. Justin R Wishart" />
+    <link href="libs/remark-css-0.0.1/default.css" rel="stylesheet" />
+    <link href="libs/font-awesome-5.3.1/css/fontawesome-all.min.css" rel="stylesheet" />
+    <link rel="stylesheet" href="assets\ssa-shiny.css" type="text/css" />
+    <link rel="stylesheet" href="assets\ssa-shiny-fonts.css" type="text/css" />
+  </head>
+  <body>
+    <textarea id="source">
+class: center, middle, inverse, title-slide
+
+# Shiny Applet Creation
+## Modules
+### Dr. Justin R Wishart
+### 23rd September 2019
+
+---
+
+
+
+
+---
+
+# Modules
+
+.blockquote[ 
+# <i class="fas  fa-comment-dots "></i> RStudio description
+A module is a self-contained, composable component of a Shiny App]
+
+* Self-contained: like a function
+    - with special arguments and syntax
+* Composable: Can combine into an app.
+
+* The module has its own UI and server 
+    - built on top of the app UI and server
+
+---
+
+# Why use modules?
+
+* Reusability: Why reinvent the wheel all the time?
+* Can bundle the common app features
+    - into a separate reusable file. `source("my_modules.R")`
+    - into a portable package! (See Pierre tommorow!)
+* Very useful for larger apps.
+
+---
+
+# Why not just use functions?
+
+* Can conceptually use functions.
+    - UI function: called from app UI
+    - Server function: called from server that defines inputs and outputs.
+
+---
+
+# Intro app revisited
+
+.scroll-box-14[
+
+```r
+ui &lt;- fluidPage(
+  selectInput(inputId = "datachoice",
+              label = "Choose dataset to view:",
+              choices = c("eruptions", "waiting"),
+              selected = "eruptions"),
+  plotOutput("myShinyOutput")
+)
+server &lt;- function(input, output) {
+  
+  output$myShinyOutput &lt;- renderPlot({
+    
+    # draw the histogram using ggplot2
+    ggplot(faithful, aes_string(input$datachoice)) +
+      geom_histogram(colour = 'black', fill = 'white')
+  })
+  
+}
+shinyApp(ui, server)
+```
+]
+
+* Let's write a function to do the same task
+
+---
+
+# Intro app revisited
+
+
+
+.pull-left[
+.scroll-box-8[
+
+```r
+*my_selector &lt;- function() {
+* selectInput(inputId = "datachoice",
+*             label = "Choose dataset to view:",
+*             choices = c("eruptions", "waiting"),
+*             selected = "eruptions")
+}
+ui &lt;- fluidPage(
+* my_selector(),
+  plotOutput("myShinyOutput")
+)
+server &lt;- function(input, output) {
+  output$myShinyOutput &lt;- renderPlot({
+    ggplot(faithful, aes_string(input$datachoice)) +
+      geom_histogram(colour = 'black', fill = 'white')
+  })
+}
+shinyApp(ui, server)
+```
+]]
+
+.pull-right[
+
+* See `apps/functions01.R`
+
+* Uses an external function call to create the UI
+
+]
+
+---
+
+## All seems well, lets rinse and repeat
+
+* See `apps/functions02.R`
+
+
+```r
+my_selector &lt;- function() {
+  selectInput(inputId = "datachoice",
+              label = "Choose dataset to view:",
+              choices = c("eruptions", "waiting"),
+              selected = "eruptions")
+}
+ui &lt;- fluidPage(
+  my_selector(),
+  plotOutput("myShinyOutput1"),
+  my_selector(),
+  plotOutput("myShinyOutput2"),
+)
+server &lt;- function(input, output) {
+  
+  output$myShinyOutput1 &lt;- renderPlot({
+    ggplot(faithful, aes_string(input$datachoice)) +
+      geom_histogram(colour = 'black', fill = 'white')
+  })
+  output$myShinyOutput2 &lt;- renderPlot({
+    ggplot(faithful, aes_string(input$datachoice)) +
+      geom_histogram(colour = 'black', fill = 'white')
+  })
+  
+}
+shinyApp(ui, server)
+```
+
+--- 
+
+# How to fix this
+
+* See `apps/functions-03.R`
+
+
+```r
+my_selector &lt;- function(id) {
+  selectInput(inputId = id,
+              label = "Choose dataset to view:",
+              choices = c("eruptions", "waiting"),
+              selected = "eruptions")
+}
+ui &lt;- fluidPage(
+  fluidRow(
+    column(6, my_selector("datachoice1")), column(6, my_selector("datachoice2"))
+  ),
+  fluidRow(
+    column(6, plotOutput("myShinyOutput1")), column(6, plotOutput("myShinyOutput2"))
+  )
+)
+server &lt;- function(input, output) {
+  
+  output$myShinyOutput1 &lt;- renderPlot({
+    ggplot(faithful, aes_string(input$datachoice1)) +
+      geom_histogram(colour = 'black', fill = 'white')
+  })
+  
+  output$myShinyOutput2 &lt;- renderPlot({
+    ggplot(faithful, aes_string(input$datachoice2)) +
+      geom_histogram(colour = 'black', fill = 'white')
+  })
+}
+shinyApp(ui, server)
+```
+
+---
+
+# What happened using the function approach?
+
+* *Problem*: Input and Output IDs in Shiny apps share a global namespace[^1]
+    - Each ID __must__ be unique across whole app.
+    - Developer must ensure input and output IDs are unique.
+    - So function must generate unique IDs.
+
+* *Solution*: Use different namespaces[^2]
+    - Modules add namespacing to Shiny UI and server framework.
+
+[^1] : Provide "spaces" for "names". They provide a context for looking up the value of an object associated with a name. http://r-pkgs.had.co.nz/namespace.html
+[^2] : Very important for robust package creation (and getting on CRAN). More for Pierre to enlighten 
+
+---
+
+# `NS`: Shiny's namespace helper function
+
+* `NS(id)` - Creates a prefix to some id string to create a namespace.
+
+
+```r
+library(shiny)
+ns &lt;- NS("SSA")
+ns("Monday") # The Shiny workshop namespace
+ns("Tuesday") # The package workshop namespace
+```
+
+---
+
+# Module construction
+
+* Construction: Two functions construct the module
+    * A UI function with use of `NS`
+    * A server function
+        - *Do not* use any namespace changes here.
+* Suggested naming convention below
+    - Replace `my_module_` with the desired name of your module
+
+
+```r
+library(shiny)
+my_module_UI &lt;- function(id) {
+  # Create a namespace function using the provided id
+  ns &lt;- NS(id)
+  # My UI elements
+  ...
+}
+my_module &lt;- function(input, output, session) {
+  # Server logic goes here
+  # No NS commands here!
+  # Just use input$ and output$ 
+  # Business as usual.
+}
+```
+
+---
+
+# Module implementation
+
+* Place the module UI function in the ui
+    - Give it a unique string id for that module.
+* Place the module server logic in the app server function body.
+    - Link it to its module UI function with the __same__ string id.
+
+
+```r
+ui &lt;- fluidPage(
+* my_module_UI("SSA")
+)
+
+server &lt;- function(input, output) {
+* callModule(my_module, "SSA")
+}
+```
+
+---
+
+# Simple module walkthrough
+
+* Create Module that has a `selectInput` with the capital letters of the alphabet and a reactive Text output that shows the chosen letter. 
+
+
+```r
+letter_module_UI &lt;- function(id) {
+  ns &lt;- NS(id)
+  selectInput(inputId = ns("variablechoice"),
+              label = "Choose a letter",
+              choices = LETTERS[1:26])
+}
+letter_module &lt;- function(input, output, session) {
+  output$letter = renderText({
+    input$letterchoice
+  })
+}
+```
+
+---
+
+# Our first modularised app
+
+* Can run this in `apps/modules-01.R`
+
+
+```r
+letter_module_UI &lt;- function(id) {
+  ns &lt;- NS(id)
+  selectInput(inputId = ns("variablechoice"),
+              label = "Choose a letter",
+              choices = LETTERS[1:26])
+}
+letter_module &lt;- function(input, output, session) {
+  output$letter = renderText({
+    paste0("You have selected ", input$letterchoice)
+  })
+}
+
+ui &lt;- fluidPage(
+  flowLayout(
+    letter_module_UI("first"),
+    letter_module_UI("second"),
+    letter_module_UI("third")
+  )
+)
+shinyApp(ui, server)
+```
+
+---
+
+# How to incorporate modules
+
+1. Directly place the module UI and server functions inline
+    - In `app.R` or `ui.R` or `server.R`
+    - Place in `global.R` (run once before the app begins)
+    - If defining a lot of modules, can get bloated.
+2. Separate `R` file for each module.
+    - place `source("my_module.R")` in `app.R` or `global.R`
+3. Create an `R` package! (another segue to Pierre!)
+    - Can place all your module functions in an R package.
+    - All these functions would be exported and visible upon loading your package.
+    - One call to `library(myGreatShinyModules)` exposes all your modules for use!
+
+---
+
+# Generalised Modules
+
+* Modules are built of specifically formatted functions
+* Can add other arguments to the module function
+
+
+```r
+library(shiny)
+*my_module_UI &lt;- function(id, ...) {
+  # Create a namespace function using the provided id
+  ns &lt;- NS(id)
+  # My UI elements
+  ...
+}
+*my_module &lt;- function(input, output, session, ...) {
+  # Server logic goes here
+  # No NS commands here!
+  # Just use input$ and output$ 
+  # Business as usual.
+}
+```
+
+---
+
+## Example
+
+
+```r
+library(shiny)
+my_module_UI &lt;- function(id, optionA) {
+  # Create a namespace function using the provided id
+  ns &lt;- NS(id)
+  # My UI elements
+  myUIfunction(ns("somelabel"), argumentA = optionA)
+  ...
+}
+my_module &lt;- function(input, output, session, extra_var) {
+  
+  output$text &lt;- renderText({
+    paste0("You chose ", input$somelabel, " and ", extra_var)
+  })
+  
+  return(something)
+}
+```
+
+* The `...` can be regular R variables 
+
+---
+
+# Back to our weird letter module
+
+* See `apps/modules-02.R`
+
+
+```r
+letter_module_UI &lt;- function(id, my_label = "Choose a letter") {
+  ns &lt;- NS(id)
+  tagList(
+    selectInput(inputId = ns("letterchoice"), 
+                label = my_label, 
+                choices = LETTERS[1:26]),
+    verbatimTextOutput(ns("letter"))
+  )
+}
+letter_module &lt;- function(input, output, session, extra_param = 42) {
+  output$letter = renderText({
+    paste0("You have selected ", input$letterchoice)
+  })
+  extra_param
+}
+
+ui &lt;- fluidPage(
+  flowLayout(
+    letter_module_UI("first"),
+    letter_module_UI("second", "Choose a special letter"),
+    letter_module_UI("third"),
+    textOutput("mod1"),
+    textOutput("mod2"),
+    textOutput("mod3")
+    
+  )
+)
+server &lt;- function(input, output) {
+  mod1out &lt;- callModule(letter_module, "first")
+  mod2out &lt;- callModule(letter_module, "second", extra_param = 10)
+  mod3out &lt;- callModule(letter_module, "third")
+  
+  output$mod1 &lt;- renderText({
+    paste0("Module 1 returns", mod1out)
+  })
+  output$mod2 &lt;- renderText({
+    paste0("Module 2 returns", mod2out)
+  })
+  output$mod3 &lt;- renderText({
+    paste0("Module 3 returns", mod3out)
+  })
+}
+shinyApp(ui, server)
+```
+
+* Still static extra inputs and outputs
+
+---
+
+# Can pass reactive objects too
+
+* Recall the following syntax for `reactive` objects is
+    - `my_reactive &lt;- reactive({ input$something; other_reactive(); })`
+    - `my_reactive()` returns the value of `my_reactive`
+    - `my_reactive` gives the reference or reactive expression.
+
+---
+
+# Pass reactive input into a Module
+
+* When passing the reactive around
+    - Don't evaluate the reactive expression.
+    - Use the reference or reactive expression.
+    - Use the form `my_reactive` (with no `()` suffix)
+* When creating further outputs
+    - You want to evaluate the reactive
+    - Use the form `my_reactive()` (include the `()` suffix)
+
+
+```r
+my_module_ID &lt;- function(id) {
+  ns &lt;- NS(id)
+  ...
+}
+my_module &lt;- function(input, output, session, some_reactive) {
+  output$num &lt;- renderText({
+    some_fun(input$someotherinput, some_reactive())
+  })
+  reactive({input$mymoduleinput})
+}
+}
+ui &lt;- fluidPage(
+  my_module_ID("my_id")
+)
+server &lt;- function(input, output) {
+  some_reactive &lt;- reactive({intput$some_input})
+  some_output &lt;- callModule(my_module, "my_id", some_reactive)
+  
+  output$value &lt;- renderText({
+    some_output()
+  })
+}
+```
+
+--- 
+
+# Giving reactive outputs from a module
+
+* Desired outputs should be place in a `reactive` at the end of the module function.
+
+
+```r
+my_module &lt;- function(input, output, session, ...) {
+  output$num &lt;- renderPrint({ ... })
+  ...
+  reactive({ ...&lt;some R code to generate output&gt;... })
+}
+```
+
+---
+
+# Example using extra reactive input in modules
+
+* See `apps/modules-03.R`
+
+
+```r
+letter_module_UI &lt;- function(id, my_label = "Choose a letter") {
+  ns &lt;- NS(id)
+  tagList(
+    selectInput(inputId = ns("letterchoice"), 
+                label = my_label, 
+                choices = LETTERS[1:26]),
+    verbatimTextOutput(ns("letter"))
+  )
+}
+letter_module &lt;- function(input, output, session, show_output) {
+  output$letter = renderText({
+    if(show_output()) {
+      paste0("You have selected ", input$letterchoice)  
+    } else {
+      return(NULL)
+    }
+  })
+}
+
+ui &lt;- fluidPage(
+  flowLayout(
+    letter_module_UI("first", ),
+    letter_module_UI("second", "Choose a special letter"),
+    letter_module_UI("third", ),
+    checkboxInput(inputId = "show",
+                  label = "Show First and Third module",
+                  value = TRUE),
+    
+    checkboxInput(inputId = "show2",
+                  label = "Show Second module",
+                  value = TRUE)
+  )
+)
+server &lt;- function(input, output) {
+  show_output &lt;- reactive({
+    input$show
+  })
+  show_output_2 &lt;- reactive({
+    input$show
+  })
+  callModule(letter_module, "first", show_output)
+  callModule(letter_module, "second", show_output_2)
+  callModule(letter_module, "third", show_output)
+  
+}
+shinyApp(ui, server)
+```
+
+---
+
+### Exercise: Modularise NYCT Data and split by Borough.
+
+* New York City have five Boroughs.
+    - Manhattan, Bronx, Brooklyn, Queens and Staten Island.
+* There are two files to start
+    - `NYCT-module.R` and `NYCT-module-data.R`
+
+1. Take the main app in `NYCT-module.R` and modularise it.
+2. Create a navbar panel layout with the tabs being
+    - Manhattan, Bronx, Brooklyn and Queens
+    - the tabs analyse only the data from their own Borough.
+    
+    
+---
+
+## Solution in files
+
+
+--- 
+
+### Final Exercise: 
+
+* Taken from Shiny developer series 2017.
+* Open `apps/final-module.R`
+* Two modules exist in this app
+
+---
+
+### App layout
+
+.pull-left[
+.scroll-box-14[
+
+```r
+library(shiny)
+
+# Module 1: Dataset chooser ---------------------------------------------------
+
+# Module 1 UI
+dataset_chooser_UI &lt;- function(id) {
+  ns &lt;- NS(id)
+  
+  tagList(
+    selectInput(ns("dataset"), "Choose a dataset", c("pressure", "cars")),
+    numericInput(ns("count"), "Number of records to return", 10)
+  )
+}
+
+# Module 1 Server
+dataset_chooser &lt;- function(input, output, session) {
+  dataset &lt;- reactive({
+    req(input$dataset)
+    get(input$dataset, pos = "package:datasets")
+  })
+  
+* return(list(
+*   dataset = dataset,
+*   count = reactive(input$count)
+* ))
+}
+
+# Module 2: Dataset summarizer ------------------------------------------------
+
+# Module 2 UI
+dataset_summarizer_UI &lt;- function(id) {
+  ns &lt;- NS(id)
+  
+  verbatimTextOutput(ns("summary"))
+}
+
+# Module 2 Server
+*dataset_summarizer &lt;- function(input, output, session, dataset, count) {
+  output$summary &lt;- renderPrint({
+    summary(head(dataset(), count()))
+  })
+}
+
+# App combining Module 1 and Module 2 -----------------------------------------
+
+# App UI
+ui &lt;- fluidPage(
+  fluidRow(
+    column(6,
+           dataset_chooser_UI("left_input"),
+           dataset_summarizer_UI("left_output")
+    ),
+    column(6,
+           dataset_chooser_UI("right_input"),
+           dataset_summarizer_UI("right_output")
+    )
+  )
+)
+
+# App server
+server &lt;- function(input, output, session) {
+* left_result &lt;- callModule(dataset_chooser, "left_input")
+* right_result &lt;- callModule(dataset_chooser, "right_input")
+  
+* callModule(dataset_summarizer, "left_output", dataset = left_result$dataset, count = left_result$count)
+* callModule(dataset_summarizer, "right_output", dataset = right_result$dataset, count = right_result$count)
+}
+
+shinyApp(ui, server)
+```
+]]
+.pull-right[
+
+* Module 1 allows user to selet a dataset from core datasets package.
+    - Returns a list with elements 
+        - the chosen dataset (as a reactive!)
+        - an integer count
+    - Notice how 
+        - the reactive is returned as an expression (no ())
+        - The module input$count variable is wrapped in a reactive.
+* Module 2 built to take the input of the dataset and count from Module 1.
+]
+
+---
+
+### Exercise Goal
+
+* Update Module 2 so that it computes and returns the mean of the each of the two variables.
+* Create a new Module 3 that takes the selected dataset and creates a scatterplot with a special extra single red point that is the mean created above.
+* Place the scatterplot with the extra red point below the existing summary table.
+
+&lt;img src="images/final-module-goal.PNG" style="width: 739px; height: 400px;"/&gt;
+
+---
+
+### Solution 
+
+* See `apps/sol-final-module.R`
+    </textarea>
+<style data-target="print-only">@media screen {.remark-slide-container{display:block;}.remark-slide-scaler{box-shadow:none;}}</style>
+<script src="https://remarkjs.com/downloads/remark-latest.min.js"></script>
+<script>var slideshow = remark.create({
+"slideNumberFormat": "<div class=\"progress-bar-container\">   <div class=\"progress-bar\" style=\"width: calc(%current% / %total% * 100%);\">   </div> </div>` ",
+"highlightStyle": "github",
+"highlightLines": true,
+"countIncrementalSlides": false,
+"ratio": "16:9",
+"navigation": {
+"scroll": false
+}
+});
+if (window.HTMLWidgets) slideshow.on('afterShowSlide', function (slide) {
+  window.dispatchEvent(new Event('resize'));
+});
+(function(d) {
+  var s = d.createElement("style"), r = d.querySelector(".remark-slide-scaler");
+  if (!r) return;
+  s.type = "text/css"; s.innerHTML = "@page {size: " + r.style.width + " " + r.style.height +"; }";
+  d.head.appendChild(s);
+})(document);
+
+(function(d) {
+  var el = d.getElementsByClassName("remark-slides-area");
+  if (!el) return;
+  var slide, slides = slideshow.getSlides(), els = el[0].children;
+  for (var i = 1; i < slides.length; i++) {
+    slide = slides[i];
+    if (slide.properties.continued === "true" || slide.properties.count === "false") {
+      els[i - 1].className += ' has-continuation';
+    }
+  }
+  var s = d.createElement("style");
+  s.type = "text/css"; s.innerHTML = "@media print { .has-continuation { display: none; } }";
+  d.head.appendChild(s);
+})(document);
+// delete the temporary CSS (for displaying all slides initially) when the user
+// starts to view slides
+(function() {
+  var deleted = false;
+  slideshow.on('beforeShowSlide', function(slide) {
+    if (deleted) return;
+    var sheets = document.styleSheets, node;
+    for (var i = 0; i < sheets.length; i++) {
+      node = sheets[i].ownerNode;
+      if (node.dataset["target"] !== "print-only") continue;
+      node.parentNode.removeChild(node);
+    }
+    deleted = true;
+  });
+})();</script>
+
+<script>
+(function() {
+  var links = document.getElementsByTagName('a');
+  for (var i = 0; i < links.length; i++) {
+    if (/^(https?:)?\/\//.test(links[i].getAttribute('href'))) {
+      links[i].target = '_blank';
+    }
+  }
+})();
+</script>
+
+<script>
+slideshow._releaseMath = function(el) {
+  var i, text, code, codes = el.getElementsByTagName('code');
+  for (i = 0; i < codes.length;) {
+    code = codes[i];
+    if (code.parentNode.tagName !== 'PRE' && code.childElementCount === 0) {
+      text = code.textContent;
+      if (/^\\\((.|\s)+\\\)$/.test(text) || /^\\\[(.|\s)+\\\]$/.test(text) ||
+          /^\$\$(.|\s)+\$\$$/.test(text) ||
+          /^\\begin\{([^}]+)\}(.|\s)+\\end\{[^}]+\}$/.test(text)) {
+        code.outerHTML = code.innerHTML;  // remove <code></code>
+        continue;
+      }
+    }
+    i++;
+  }
+};
+slideshow._releaseMath(document);
+</script>
+<!-- dynamically load mathjax for compatibility with self-contained -->
+<script>
+(function () {
+  var script = document.createElement('script');
+  script.type = 'text/javascript';
+  script.src  = 'https://mathjax.rstudio.com/latest/MathJax.js?config=TeX-MML-AM_CHTML';
+  if (location.protocol !== 'file:' && /^https?:/.test(script.src))
+    script.src  = script.src.replace(/^https?:/, '');
+  document.getElementsByTagName('head')[0].appendChild(script);
+})();
+</script>
+  </body>
+</html>

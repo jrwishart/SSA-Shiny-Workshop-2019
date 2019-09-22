@@ -1,0 +1,445 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="" xml:lang="">
+  <head>
+    <title>Shiny Applet Creation</title>
+    <meta charset="utf-8" />
+    <meta name="author" content="Dr. Justin R Wishart" />
+    <link href="libs/remark-css-0.0.1/default.css" rel="stylesheet" />
+    <link rel="stylesheet" href="assets\ssa-shiny.css" type="text/css" />
+    <link rel="stylesheet" href="assets\ssa-shiny-fonts.css" type="text/css" />
+  </head>
+  <body>
+    <textarea id="source">
+class: center, middle, inverse, title-slide
+
+# Shiny Applet Creation
+## User Interface (UI)
+### Dr. Justin R Wishart
+### 23rd September 2019
+
+---
+
+
+
+
+## What is the User Interface?
+
+### User Interface languages
+
+* The User interface is really HTML with CSS and Javascript
+    - __NB__: A Shiny app author doesn't need to know this!
+* A keen author skilled in HTML/CSS/Javascript can write more complex advanced apps. 
+    - See (Insert links)
+
+---
+
+### UI building options
+
+1. Use the built-in layouts and inputs/outputs
+    - __We will focus on this__
+2. Use external packages __honorable mention this workshop__
+    - Can create dashboards (shinydashboard, flexdashboard)
+    - Can choose from set of themes (shinythemes)
+3. Advanced Users who know some HTML, CSS, and/or Javascript __beyond our scope__
+    - Use tag objects
+    - Write own UI functions
+    - Write Custom inputs/outputs
+    - Create own HTML templates
+    - Use existing CSS/Javascript libraries/frameworks.
+
+---
+
+### Possible built-in frameworks
+
+* Bootstrap grid framework
+    - `fluidPage`, `fixedPage`, `fluidRow`, `column`
+* Navigation Panels
+    - `tabsetPanel`, `navlistPanel`, `navbarPage`
+* Containers
+    - `wellPanel`, `absolutePanel`, `fixedPanel`
+* Fill layouts
+    - `fillPage`, `fillRow`, `fillCol`
+* Modals and notifications
+    - `showModal`, `modalDialog`
+
+---
+
+## Bootstrap 2 Grid
+
+Bootstrap 2.0 is a grid system for building layouts of all shapes and sizes. It's based on a 12 column layout.
+
+-- Created by Mark Otto and Jacob Thornton at Twitter
+
+---
+
+### Bootstrap 2.0 Grid
+
+&lt;img src="images/bootstrap.png" style="width:100%;"/&gt;
+
+* Each webpage has 12 columns.
+* Each column of content must span integer number of subcolumns
+
+---
+
+### General Layout Commands
+
+* Layout setup with
+    - `fluidPage()` creates the entire bootstrap grid page
+* Sidebar layout setup and controlled with
+    - `sidebarLayout()`: setups the layout
+    - `sidebarPanel(input)`: Sidebar (inputs) to be placed
+    - `mainPanel(output)`: main Panel to be placed
+* General layout controlled with
+    - `fluidRow()` wraps each row's column
+    - `column(width, )` wraps each column's content
+
+---
+
+### sidebarLayout
+
+&lt;img src="images/bootstrap-sidebar.png" style="height:70%;"/&gt;
+
+---
+
+### sidebarLayout
+
+* __sidebarLayout(sidebarPanel(), mainPanel(),...)__
+    - __sidebarPanel__: 
+        - Takes up 1/3 of the column space
+        - Contains the input controls 
+    - __mainPanel__:
+        - Takes up 2/3 of the column space
+        - Contains the output
+
+---
+
+### Skeleton of sidebarLayout
+
+
+```r
+library(shiny)
+
+ui &lt;- fluidPage(
+  sidebarLayout(
+    sidebarPanel(
+      *Input(&lt;inputId&gt;)
+    ),
+    mainPanel(
+      *Output(&lt;outputId&gt;)
+    )
+  )
+)
+
+server &lt;- function(input, output) { &lt;my-shiny-recipe&gt; }
+
+shinyApp(ui = ui, server = server)
+```
+
+* Careful with the commas!
+
+---
+
+### Example: Cleaning up the intro
+
+Open `apps/ui-01.R`
+
+* Notice the `titlePanel` before the `sidebarLayout`.
+    - Adds a title in larger font to the App.
+* Resize the app window and see what happens.
+* `sidebarLayout` also can be flipped. Change
+    - `sidebarLayout(position = "left",` to
+    - `sidebarLayout(position = "right",`
+
+
+---
+
+### General Bootstrap Layout
+
+&lt;img src="images/bootstrap.png" style="width:100%;"/&gt;
+
+* Each of the columns __must__ span an __integer__ width
+* Height is responsively determined by Javascript
+    - Further details, at [Rstudio grid layout guide](https://shiny.rstudio.com/articles/layout-guide.html)
+
+---
+
+### Example code of rows 3 &amp; 4
+
+
+```r
+UI &lt;- fluidPage(
+  fluidRow(
+    column(4, object1),
+    column(8, object2)
+  ),
+  fluidRow(
+    column(6, object3),
+    column(6, object4)
+  )
+)
+```
+
+---
+
+### More detailed example:
+
+&lt;img src="images/bootstrap-specific-grid.png" style="height:80%;"/&gt;
+
+---
+
+### Bootstrap code for last example
+
+
+```r
+ui &lt;- fluidPage(
+  fluidRow(
+    column(6, object1),
+    column(6, object2, object3)
+  ),
+  fluidRow(
+    column(8, object4),
+    column(4, object5)
+  )
+)
+```
+
+---
+
+### Exercise using Bootstrap
+
+Open `apps/ui-02.R`
+
+* Modify the layout to look like the next slide
+* Suggest viewing in external browser if you want the typeset equations.
+
+---
+
+### Goal Layout
+
+
+&lt;img src="images/bootstrap-exercise.png" style="width:100%;"/&gt;
+
+---
+
+### Solution
+
+Open `apps/sol-ui-02.R`
+
+---
+
+### Navbar Pages
+
+&lt;img src="images/navbar-example.png" style="width:100%;"/&gt;
+
+* App can be split into tabs.
+* Uses the bootstrap navbar setup
+    - Can embed other bootstrap code inside each tab (fluidRow, column)
+
+---
+
+### Skeleton of Navbar
+
+
+```r
+ui &lt;- navbarPage(title = "My Application",
+  tabPanel("My Tab 1",
+    *Input("input1")
+    *Output("output1")
+  ),
+  tabPanel("Component 2",
+    ...
+  ),
+  tabPanel("Component 3",
+    ...
+  )
+)
+```
+
+* Can place (nest) other UI layouts in each `tabPanel`
+
+---
+
+### Exercise using Navbar
+
+Open `apps/ui-03.R`. Modify the UI to have three `tabPanels`
+
+* __Simulation settings__: All the simulation inputs and scatterplot go here
+* __Summary Ouptut__: Place the summary lm output here
+* __Data Table__: Place the dataTable output here.
+
+Don't forget to set the ui to be `ui &lt;- navbarPage(`
+
+---
+
+### Goal Layout
+
+
+&lt;img src="images/navbar-exercise.png" style="width:75%;"/&gt;
+
+---
+
+### Solution
+
+Open `apps/sol-ui-03.R`
+
+---
+
+## External packages
+
+### Possible external packages
+
+* Shiny Dashboard in package `shinydashboard`
+* Shiny Themes in package `shinythemes`
+* Markdown style! in package  `flexdashboard`
+* miniUI in package (see rstudio github)
+* More ... 
+
+---
+
+### Shiny themes
+
+* Easy way to change the look and colour scheme using Bootstrap themes
+* See examples at [Rstudio](https://rstudio.github.io/shinythemes/)
+
+---
+
+### How to use Shiny Themes
+
+* Load the `shinythemes` package in the preamble of your `app.R`
+* Two possible ways
+    - Set the theme using the `theme` argument in UI
+    - Use the theme selector
+    
+### Set desired theme
+
+
+```r
+library(shinythemes)
+
+ui &lt;- fluidPage(theme = shinytheme("cerulean"),
+  ...
+)
+```
+
+* Also works inside `bootstrapPage`, `navbarPage`, or `fixedPage`
+
+---
+
+### Live Theme selector
+
+
+```r
+ui &lt;- fluidPage(
+        shinythemes::themeSelector()
+        ...
+      )
+```
+
+* Somewhere in your ui call, place the code above
+* Places a `selectInput` box to dynamically choose a theme.
+
+---
+
+### Exercise on shiny themes
+
+Open your favourite app so far in `apps/` and customise the theme using the live themeselector
+
+* When you have chosen a theme. 
+    - Stop the app
+    - Go back and set the theme (`theme = "&lt;mychoice&gt;"`).
+    </textarea>
+<style data-target="print-only">@media screen {.remark-slide-container{display:block;}.remark-slide-scaler{box-shadow:none;}}</style>
+<script src="https://remarkjs.com/downloads/remark-latest.min.js"></script>
+<script>var slideshow = remark.create({
+"slideNumberFormat": "<div class=\"progress-bar-container\">   <div class=\"progress-bar\" style=\"width: calc(%current% / %total% * 100%);\">   </div> </div>` ",
+"highlightStyle": "github",
+"highlightLines": true,
+"countIncrementalSlides": false,
+"ratio": "16:9",
+"navigation": {
+"scroll": false
+}
+});
+if (window.HTMLWidgets) slideshow.on('afterShowSlide', function (slide) {
+  window.dispatchEvent(new Event('resize'));
+});
+(function(d) {
+  var s = d.createElement("style"), r = d.querySelector(".remark-slide-scaler");
+  if (!r) return;
+  s.type = "text/css"; s.innerHTML = "@page {size: " + r.style.width + " " + r.style.height +"; }";
+  d.head.appendChild(s);
+})(document);
+
+(function(d) {
+  var el = d.getElementsByClassName("remark-slides-area");
+  if (!el) return;
+  var slide, slides = slideshow.getSlides(), els = el[0].children;
+  for (var i = 1; i < slides.length; i++) {
+    slide = slides[i];
+    if (slide.properties.continued === "true" || slide.properties.count === "false") {
+      els[i - 1].className += ' has-continuation';
+    }
+  }
+  var s = d.createElement("style");
+  s.type = "text/css"; s.innerHTML = "@media print { .has-continuation { display: none; } }";
+  d.head.appendChild(s);
+})(document);
+// delete the temporary CSS (for displaying all slides initially) when the user
+// starts to view slides
+(function() {
+  var deleted = false;
+  slideshow.on('beforeShowSlide', function(slide) {
+    if (deleted) return;
+    var sheets = document.styleSheets, node;
+    for (var i = 0; i < sheets.length; i++) {
+      node = sheets[i].ownerNode;
+      if (node.dataset["target"] !== "print-only") continue;
+      node.parentNode.removeChild(node);
+    }
+    deleted = true;
+  });
+})();</script>
+
+<script>
+(function() {
+  var links = document.getElementsByTagName('a');
+  for (var i = 0; i < links.length; i++) {
+    if (/^(https?:)?\/\//.test(links[i].getAttribute('href'))) {
+      links[i].target = '_blank';
+    }
+  }
+})();
+</script>
+
+<script>
+slideshow._releaseMath = function(el) {
+  var i, text, code, codes = el.getElementsByTagName('code');
+  for (i = 0; i < codes.length;) {
+    code = codes[i];
+    if (code.parentNode.tagName !== 'PRE' && code.childElementCount === 0) {
+      text = code.textContent;
+      if (/^\\\((.|\s)+\\\)$/.test(text) || /^\\\[(.|\s)+\\\]$/.test(text) ||
+          /^\$\$(.|\s)+\$\$$/.test(text) ||
+          /^\\begin\{([^}]+)\}(.|\s)+\\end\{[^}]+\}$/.test(text)) {
+        code.outerHTML = code.innerHTML;  // remove <code></code>
+        continue;
+      }
+    }
+    i++;
+  }
+};
+slideshow._releaseMath(document);
+</script>
+<!-- dynamically load mathjax for compatibility with self-contained -->
+<script>
+(function () {
+  var script = document.createElement('script');
+  script.type = 'text/javascript';
+  script.src  = 'https://mathjax.rstudio.com/latest/MathJax.js?config=TeX-MML-AM_CHTML';
+  if (location.protocol !== 'file:' && /^https?:/.test(script.src))
+    script.src  = script.src.replace(/^https?:/, '');
+  document.getElementsByTagName('head')[0].appendChild(script);
+})();
+</script>
+  </body>
+</html>

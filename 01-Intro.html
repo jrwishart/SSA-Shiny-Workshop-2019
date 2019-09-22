@@ -1,0 +1,696 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="" xml:lang="">
+  <head>
+    <title>Shiny Applet Creation</title>
+    <meta charset="utf-8" />
+    <meta name="author" content="Dr. Justin R Wishart" />
+    <link href="libs/remark-css-0.0.1/default.css" rel="stylesheet" />
+    <link href="libs/font-awesome-5.3.1/css/fontawesome-all.min.css" rel="stylesheet" />
+    <link rel="stylesheet" href="assets\ssa-shiny.css" type="text/css" />
+    <link rel="stylesheet" href="assets\ssa-shiny-fonts.css" type="text/css" />
+  </head>
+  <body>
+    <textarea id="source">
+class: center, middle, inverse, title-slide
+
+# Shiny Applet Creation
+## Overview and Basics
+### Dr. Justin R Wishart
+### 23rd September 2019
+
+---
+
+
+
+
+## Materials and Setup
+
+* <i class="fas  fa-wifi "></i> Wifi connectivity
+    - Network Name: Macquarie Events
+    - Browse to [www.mq.edu.au](www.mq.edu.au) and follow to prompts and enter passcode: stats2019
+* <i class="fab  fa-github "></i> Workshop Materials available at repo [github.com/jrwishart/SSA-Shiny-Workshop-2019](https://github.com/jrwishart/SSA-Shiny-Workshop-2019)
+    - Clone within Rstudio (need `git` setup)
+        - `Create New project` &gt; `Version control` &gt; `Git`
+        - Set `https://github.com/jrwishart/SSA-Shiny-Workshop-2019` as the repo URL.
+    - Clone from command line, navigate to parent directory of choice then,
+        - `&gt; git clone https://github.com/jrwishart/SSA-Shiny-Workshop-2019`
+    - If git not installed.
+        - <i class="fas  fa-file-archive "></i> Download the zip file from [here](https://github.com/jrwishart/SSA-Shiny-Workshop-2019/archive/master.zip) then extract it.
+  
+
+---
+
+### Tenative Plan
+
+* 9:00am Overview and basics
+* 10:30am Morning tea
+* 11:00am User interface
+* 12:30pm Lunch
+* 1:30pm Reactivity
+* 3:00pm Break
+* 3:30pm Intermediate / Advanced uses
+* 5:00pm Close- Don’t forget to pick up your certificate!
+
+
+---
+
+# Overview
+
+## What is a Shiny app?
+
+* An `R` Package that creates interactive  web applications
+* without needing to know HTML, CSS, or JavaScript
+* Combines two things
+    - Statistical Power of `R`
+        + Use any analysis that can be coded in `R`.
+    - Interactivity via web browser
+        + Any modern web browser can work
+        + __Reactive__ output expressions.
+
+---
+
+## What is reactive output?
+
+* Output of program/interface reacts to user input
+* Not a new concept at all
+    - Easiest pervasive example of this is MS Excel!
+* Shiny apps equivalent 
+
+---
+
+## How is this created?
+
+* Shiny package: Written by RStudio team
+  - Display Code: HTML and Javascript
+  - Analysis Code: Regular R code
+  - Almalgamation: Shiny provides R wrappers.
+
+---
+
+## Deployment of applet.
+
+- Local deployment: Can run on any machine with R installed and a web browser. Syntax below
+    - `&gt; shiny::runApp(&lt;path-to-my-app&gt;)`
+- Hosted on [shinyapps.io](shinyapps.io)
+    - RStudio server built to host shiny apps (free and paid options).
+- Server side deployment: 
+    - Can host the app on a server running the Rstudio server software.
+
+---
+
+# RStudio Integrated Development Environment with Shiny
+
+## Basic File Format of Applet.
+
+* Two ways
+    - Newer: Single file __app.R__
+    - Older legacy way: Two Files
+        - __server.R__ (Analysis code)
+        - __ui.R__ (Display code)
+
+---
+
+## Locally running the app
+
+&lt;img src="images/runApp.png" style="width: 739px; height: 400px;"/&gt;
+
+* Can run the app from the source window
+
+
+---
+
+## Three viewer options
+
+&lt;img src="images/viewer-full.png" style="width: 739px; height: 400px;"/&gt;
+
+---
+
+## Stop an app with the &lt;img src ="images/stop-button.jpeg" style="width: 50px; height: 50px;"/&gt; button
+
+* A running app uses the R console
+    - Can't do any R commands
+    - Why? Your R console is now the shiny server!
+
+&lt;img src ="images/stop-full.png" style="width: 739px; height: 400px;"/&gt;
+
+---
+
+## Launch first app
+
+* Create new app file
+
+&lt;img src ="images/file-new-app.png" style="height: 190px;"/&gt;
+
+&lt;img src ="images/new-app-location.png" style="width: 191px; height: 100px;"/&gt;
+
+* Set name, directory location, and leave type as `app.R` 
+
+* Then the different viewing options.
+    - Run (or reload) &lt;img src ="images/runApp-button.png" style="height: 25px;"/&gt;
+    - Stopping &lt;img src ="images/stop-buttons.png" style="height: 25px;"/&gt;
+    - Window options &lt;img src ="images/viewer-buttons.png" style="height: 100px;"/&gt;
+
+---
+
+# Basics of an App
+
+## Look at the app template
+
+Open `apps/intro-01.R`
+
+
+```r
+library(shiny)
+
+# Define UI 
+ui &lt;- fluidPage()
+
+# Define server interactions
+server &lt;- function(input, output) {}
+
+# Run the application 
+shinyApp(ui = ui, server = server)
+```
+
+&lt;div class="notes"&gt;
+* Controls layout and appearance
+    - user input area
+    - output drawn
+    - It really is HTML/CSS/Javascript
+* Server needs code to 
+    - deal with inputs 
+    - create outputs
+&lt;/div&gt;
+
+---
+
+## Skeleton of standalone app file
+
+
+```r
+library(shiny)
+
+# Define UI 
+ui &lt;- fluidPage()
+
+# Define server interactions
+server &lt;- function(input, output) {}
+
+# Run the application 
+shinyApp(ui = ui, server = server)
+```
+
+* Four essential parts
+
+---
+
+## Skeleton of standalone app file
+
+
+```r
+*library(shiny)
+
+# Define UI 
+ui &lt;- fluidPage()
+
+# Define server interactions
+server &lt;- function(input, output) {}
+
+# Run the application 
+shinyApp(ui = ui, server = server)
+```
+
+* A call of the `shiny` library.
+
+---
+
+## Skeleton of standalone app file
+
+
+```r
+library(shiny)
+
+
+*# Define UI
+*ui &lt;- fluidPage()
+
+# Define server interactions
+server &lt;- function(input, output) {}
+
+# Run the application 
+shinyApp(ui = ui, server = server)
+```
+
+* A definition of the **u**ser **i**nterface (__ui__)
+    - Inputs and where they are
+    - Where the outputs should be
+    - HTML/Javascript/CSS goes here
+
+---
+
+## Skeleton of standalone app file
+
+
+```r
+library(shiny)
+
+# Define UI 
+ui &lt;- fluidPage()
+
+*# Define server interactions
+*server &lt;- function(input, output) {}
+
+# Run the application 
+shinyApp(ui = ui, server = server)
+```
+
+* Server code instructions/recipe
+    - How the server should create output from user input
+    - When to **listen** for input changes (i.e. __reactive__)
+
+---
+
+## Skeleton of standalone app file
+
+
+```r
+library(shiny)
+
+# Define UI 
+ui &lt;- fluidPage()
+
+# Define server interactions
+server &lt;- function(input, output) {}
+
+*# Run the application
+*shinyApp(ui = ui, server = server)
+```
+
+* A call to run the application.
+
+---
+
+# Place Output in App
+
+## Two main families of functions
+
+* `*Output` set that anchors the output in the UI
+* `render*` set that tells Shiny how to make the output
+* Segue: `R` is a sequential language
+    - Classic `R`, each line is run sequentially.
+    - Reactive language is not quite the same.
+    - Shiny decides when to react.
+    - When it reacts, it needs instructions to carry out!
+    - You give Shiny instructions to do a set of tasks.
+    - Shiny does the tasks, in the order it wants.
+
+---
+
+## render* and *Output Links
+
+&lt;table class='gmisc_table' style='border-collapse: collapse; margin-top: 1em; margin-bottom: 1em;' &gt;
+&lt;thead&gt;
+&lt;tr&gt;
+&lt;th style='border-bottom: 1px solid grey; border-top: 2px solid grey; text-align: center;'&gt;Visual Output&lt;/th&gt;
+&lt;th style='border-bottom: 1px solid grey; border-top: 2px solid grey; text-align: center;'&gt;render*&lt;/th&gt;
+&lt;th style='border-bottom: 1px solid grey; border-top: 2px solid grey; text-align: center;'&gt;&lt;/th&gt;
+&lt;th style='border-bottom: 1px solid grey; border-top: 2px solid grey; text-align: center;'&gt;*Output&lt;/th&gt;
+&lt;/tr&gt;
+&lt;/thead&gt;
+&lt;tbody&gt;
+&lt;tr&gt;
+&lt;td style='text-align: center;'&gt;&lt;img src="images/renderDataTable.png" style="width: 100px;"/&gt;&lt;/td&gt;
+&lt;td style='text-align: right;'&gt;DT::renderDataTable(expr,...)&lt;/td&gt;
+&lt;td style='text-align: center;'&gt;&amp;#8660;&lt;/td&gt;
+&lt;td style='text-align: left;'&gt;dataTableOutput(outputId)&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr style='background-color: #f7f7f7;'&gt;
+&lt;td style='background-color: #f7f7f7; text-align: center;'&gt;&lt;img src="images/renderImage.png" style="width: 100px;"/&gt;&lt;/td&gt;
+&lt;td style='background-color: #f7f7f7; text-align: right;'&gt;renderImage(expr,...)&lt;/td&gt;
+&lt;td style='background-color: #f7f7f7; text-align: center;'&gt;&amp;#8660;&lt;/td&gt;
+&lt;td style='background-color: #f7f7f7; text-align: left;'&gt;imageOutput(outputId,...)&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td style='text-align: center;'&gt;&lt;img src="images/renderPlot.png" style="width: 100px;"/&gt;&lt;/td&gt;
+&lt;td style='text-align: right;'&gt;renderPlot(expr,...)&lt;/td&gt;
+&lt;td style='text-align: center;'&gt;&amp;#8660;&lt;/td&gt;
+&lt;td style='text-align: left;'&gt;plotOutput(outputId,...)&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr style='background-color: #f7f7f7;'&gt;
+&lt;td style='background-color: #f7f7f7; text-align: center;'&gt;&lt;img src="images/renderPrint.png" style="width: 100px;"/&gt;&lt;/td&gt;
+&lt;td style='background-color: #f7f7f7; text-align: right;'&gt;renderPrint(expr,...)&lt;/td&gt;
+&lt;td style='background-color: #f7f7f7; text-align: center;'&gt;&amp;#8660;&lt;/td&gt;
+&lt;td style='background-color: #f7f7f7; text-align: left;'&gt;verbatimTextOutput(outputId)&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td style='text-align: center;'&gt;&lt;img src="images/renderTable.png" style="width: 100px;"/&gt;&lt;/td&gt;
+&lt;td style='text-align: right;'&gt;renderTable(expr,...)&lt;/td&gt;
+&lt;td style='text-align: center;'&gt;&amp;#8660;&lt;/td&gt;
+&lt;td style='text-align: left;'&gt;tableOutput(outputId)&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr style='background-color: #f7f7f7;'&gt;
+&lt;td style='background-color: #f7f7f7; text-align: center;'&gt;&lt;img src="images/renderText.png" style="width: 100px;"/&gt;&lt;/td&gt;
+&lt;td style='background-color: #f7f7f7; text-align: right;'&gt;renderText(expr,...)&lt;/td&gt;
+&lt;td style='background-color: #f7f7f7; text-align: center;'&gt;&amp;#8660;&lt;/td&gt;
+&lt;td style='background-color: #f7f7f7; text-align: left;'&gt;textOutput(outputId, ...)&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td style='border-bottom: 2px solid grey; text-align: center;'&gt;&lt;img src="images/renderUI.png" style="width: 100px;"/&gt;&lt;/td&gt;
+&lt;td style='border-bottom: 2px solid grey; text-align: right;'&gt;renderUI(expr,...)&lt;/td&gt;
+&lt;td style='border-bottom: 2px solid grey; text-align: center;'&gt;&amp;#8660;&lt;/td&gt;
+&lt;td style='border-bottom: 2px solid grey; text-align: left;'&gt;uiOutput(outputId, ...)&lt;/td&gt;
+&lt;/tr&gt;
+&lt;/tbody&gt;
+&lt;/table&gt;
+
+---
+
+## Example: put *Output call in UI.
+
+
+```r
+library(shiny)
+
+
+*ui &lt;- fluidPage(
+*       plotOutput("myShinyPlot")
+*) 
+
+server &lt;- function(input, output) {}
+
+shinyApp(ui = ui, server = server)
+```
+
+* `*Output(&lt;outputId&gt;)` call goes in the UI area
+    - e.g. `plotOutput("myShinyPlot")` shown above
+
+---
+
+## Example: Linking it to server render
+
+
+```r
+ui &lt;- fluidPage(
+        plotOutput("myShinyPlot")
+)
+
+server &lt;- function(input, output) {
+* output$myShinyPlot &lt;- renderPlot({
+*   hist(faithful[, 1])
+* })
+}
+
+shinyApp(ui = ui, server = server)
+```
+
+* `output$&lt;outputId&gt; &lt;- render*(&lt;output code&gt;)` in server area
+    - This is a boring plot that isn't interactive!
+    - Need a statement with `input$&lt;inputId&gt;` to make it __reactive__!
+
+---
+
+# Allow Modifiable Inputs
+
+## Basic Inputs (from [RStudio cheatsheet](https://www.rstudio.org/links/shiny_cheat_sheet/))
+
+&lt;table class='gmisc_table' style='border-collapse: collapse; margin-top: 1em; margin-bottom: 1em;' &gt;
+&lt;thead&gt;
+&lt;tr&gt;
+&lt;th style='border-bottom: 1px solid grey; border-top: 2px solid grey; text-align: center;'&gt;&lt;/th&gt;
+&lt;th style='border-bottom: 1px solid grey; border-top: 2px solid grey; text-align: center;'&gt;&lt;/th&gt;
+&lt;th style='border-bottom: 1px solid grey; border-top: 2px solid grey; text-align: center;'&gt;&lt;/th&gt;
+&lt;th style='border-bottom: 1px solid grey; border-top: 2px solid grey; text-align: center;'&gt;&lt;/th&gt;
+&lt;/tr&gt;
+&lt;/thead&gt;
+&lt;tbody&gt;
+&lt;tr&gt;
+&lt;td style='text-align: left;'&gt;&lt;img src="images/actionButton.png" style="height: 25px;"/&gt;&lt;/td&gt;
+&lt;td style='text-align: left;'&gt;actionButton(inputId, label)&lt;/td&gt;
+&lt;td style='text-align: left;'&gt;&lt;img src="images/numericInput.png" style="height: 25px;"/&gt;&lt;/td&gt;
+&lt;td style='text-align: left;'&gt;numericInput(inputId, label, value)&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr style='background-color: #f7f7f7;'&gt;
+&lt;td style='background-color: #f7f7f7; text-align: left;'&gt;&lt;img src="images/actionLink.png" style="height: 25px;"/&gt;&lt;/td&gt;
+&lt;td style='background-color: #f7f7f7; text-align: left;'&gt;actionLink(inputId, label)&lt;/td&gt;
+&lt;td style='background-color: #f7f7f7; text-align: left;'&gt;&lt;img src="images/passwordInput.png" style="height: 25px;"/&gt;&lt;/td&gt;
+&lt;td style='background-color: #f7f7f7; text-align: left;'&gt;passwordInput(inputId, label)&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td style='text-align: left;'&gt;&lt;img src="images/checkboxGroupInput.png" style="height: 50px;"/&gt;&lt;/td&gt;
+&lt;td style='text-align: left;'&gt;checkboxGroupInput(inputId, label, choices)&lt;/td&gt;
+&lt;td style='text-align: left;'&gt;&lt;img src="images/radioButtons.png" style="height: 50px;"/&gt;&lt;/td&gt;
+&lt;td style='text-align: left;'&gt;radioButtons(inputId, label, choices)&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr style='background-color: #f7f7f7;'&gt;
+&lt;td style='background-color: #f7f7f7; text-align: left;'&gt;&lt;img src="images/checkboxInput.png" style="height: 25px;"/&gt;&lt;/td&gt;
+&lt;td style='background-color: #f7f7f7; text-align: left;'&gt;checkboxInput(inputId, label)&lt;/td&gt;
+&lt;td style='background-color: #f7f7f7; text-align: left;'&gt;&lt;img src="images/selectInput.png" style="height: 50px;"/&gt;&lt;/td&gt;
+&lt;td style='background-color: #f7f7f7; text-align: left;'&gt;selectInput(inputId, label, choices)&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td style='text-align: left;'&gt;&lt;img src="images/dateInput.png" style="height: 50px;"/&gt;&lt;/td&gt;
+&lt;td style='text-align: left;'&gt;dateInput(inputId, label)&lt;/td&gt;
+&lt;td style='text-align: left;'&gt;&lt;img src="images/sliderInput.png" style="height: 50px;"/&gt;&lt;/td&gt;
+&lt;td style='text-align: left;'&gt;sliderInput(inputId, label, min, max)&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr style='background-color: #f7f7f7;'&gt;
+&lt;td style='background-color: #f7f7f7; text-align: left;'&gt;&lt;img src="images/dateRangeInput.png" style="height: 50px;"/&gt;&lt;/td&gt;
+&lt;td style='background-color: #f7f7f7; text-align: left;'&gt;dateRangeInput(inputId, label)&lt;/td&gt;
+&lt;td style='background-color: #f7f7f7; text-align: left;'&gt;&lt;img src="images/textInput.png" style="height: 25px;"/&gt;&lt;/td&gt;
+&lt;td style='background-color: #f7f7f7; text-align: left;'&gt;textInput(inputId, label)&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td style='border-bottom: 2px solid grey; text-align: left;'&gt;&lt;img src="images/fileInput.png" style="height: 25px;"/&gt;&lt;/td&gt;
+&lt;td style='border-bottom: 2px solid grey; text-align: left;'&gt;fileInput(inputId, label)&lt;/td&gt;
+&lt;td style='border-bottom: 2px solid grey; text-align: left;'&gt;&lt;/td&gt;
+&lt;td style='border-bottom: 2px solid grey; text-align: left;'&gt;&lt;/td&gt;
+&lt;/tr&gt;
+&lt;/tbody&gt;
+&lt;/table&gt;
+
+&lt;!-- {.columns-2 .smaller} --&gt;
+
+&lt;!-- * &lt;img src="images/actionButton.png" style="width: 100px;"/&gt;__actionButton__(inputId, label) --&gt;
+&lt;!-- * &lt;img src="images/actionLink.png" style="width: 100px;"/&gt;__actionLink__(inputId, label) --&gt;
+&lt;!-- * &lt;img src="images/checkboxGroupInput.png" style="width: 100px;"/&gt;__checkboxGroupInput__(inputId, label, choices) --&gt;
+&lt;!-- * &lt;img src="images/checkboxInput.png" style="width: 100px;"/&gt;__checkboxInput__(inputId, label) --&gt;
+&lt;!-- * &lt;img src="images/dateInput.png" style="width: 100px;"/&gt;__dateInput__(inputId, label) --&gt;
+&lt;!-- * &lt;img src="images/dateRangeInput.png" style="width: 100px;"/&gt;__dateRangeInput__(inputId, label) --&gt;
+&lt;!-- * &lt;img src="images/fileInput.png" style="width: 100px;"/&gt;__fileInput__(inputId, label) --&gt;
+&lt;!-- * &lt;img src="images/numericInput.png" style="width: 100px;"/&gt;__numericInput__(inputId, label, value) --&gt;
+&lt;!-- * &lt;img src="images/passwordInput.png" style="width: 100px;"/&gt;__passwordInput__(inputId, label) --&gt;
+&lt;!-- * &lt;img src="images/radioButtons.png" style="width: 100px;"/&gt;__radioButtons__(inputId, label, choices) --&gt;
+&lt;!-- * &lt;img src="images/selectInput.png" style="width: 100px;"/&gt;__selectInput__(inputId, label, choices) --&gt;
+&lt;!-- * &lt;img src="images/sliderInput.png" style="width: 100px;"/&gt;__sliderInput__(inputId, label, min, max) --&gt;
+&lt;!-- value --&gt;
+&lt;!-- * &lt;img src="images/textInput.png" style="width: 100px;"/&gt;__textInput__(inputId, label) --&gt;
+
+---
+
+## Skeleton Input structure
+
+
+```r
+ui &lt;- fluidPage(
+*   selectInput(inputId = "myInput",...),
+    plotOutput(outputId = "myOutput")
+)
+
+server &lt;- function(input, output) {
+  output$myOutput &lt;- renderPlot({
+    plot(x = input$myInput)
+  })
+}
+```
+
+* `input` is an R environment
+    - `*Input` put in the UI area
+    - objects accessed/references with `input$&lt;inputId&gt;`
+    - `&lt;inputId&gt;` is a character string label of your choice
+    - __All__* inputs require an `&lt;inputId&gt;`
+        - Only the old `submitButton` doesn't need an `&lt;inputId&gt;`
+
+---
+
+## Input structure
+
+
+```r
+ui &lt;- fluidPage(
+    someInput(inputId = "myInput",...),
+*   someOutput(outputId = "myOutput")
+)
+
+*server &lt;- function(input, output) {
+* output$myOutput &lt;- renderPlot({
+*   plot(x = input$myInput)
+* })
+*} 
+```
+
+* The Output is placed in the UI with one of the `*Output` functions
+* Server code written which depends on the `input$&lt;inputId&gt;`
+    - Can be in the `render*` function
+    - Can be in a __reactive__ object (more on this later)
+
+---
+
+## Example: Choosing the dataset.
+
+Open `apps/intro-02.R`
+
+
+```r
+ui &lt;- fluidPage(
+* selectInput(inputId = "datachoice",
+*             label = "Choose dataset to view:",
+*             choices = c("eruptions", "waiting"),
+*             selected = "eruptions"),
+  plotOutput("myShinyOutput")
+)
+```
+
+---
+
+### Exercise : Add another input to the basic faithful histogram app
+
+* Add a slider to control the number of bins with the following arguments
+    - __inputId = numBins__
+    - __label = "Select number of bins"__
+    - __min = 1__ 
+    - __max = 50__
+    - __value = 30__
+* Use this input variable to control the number of bins as an argument in the __geom_histogram__ function. (see `? geom_histogram`, the bins argument)
+* Run the app and see the result
+* The solution will be shown in `apps/intro-03.R`
+
+---
+
+### Exercise: Show numeric output
+
+* Add a checkbox input to show a data `summary` of the selected dataset
+  - Use the __checkBoxInput(inputId, label)__ function
+* Allocate space in the UI with __verbatimTextOutput`__
+* Link the output to the server using __renderPrint__
+
+---
+
+* The solution is shown in `apps/intro-04.R`
+
+---
+
+# Outsourced Hosting: Shinyapps.io
+
+&lt;img src="images/shinyapps-io-splash.png" style="width:100%; height: 66%;"/&gt;
+
+---
+
+## Shinyapps.io: What is it?
+
+* Rstudio maintains a server 
+    - Pros: As promoted
+        - Easy to use
+        - Secure
+        - Scalable
+    - Cons
+        - Only basic free options
+* Alternatives
+    - Build your own server.
+    - Create your own with Amazon Web Services.
+    - Stick with local hosting.
+    </textarea>
+<style data-target="print-only">@media screen {.remark-slide-container{display:block;}.remark-slide-scaler{box-shadow:none;}}</style>
+<script src="https://remarkjs.com/downloads/remark-latest.min.js"></script>
+<script>var slideshow = remark.create({
+"slideNumberFormat": "<div class=\"progress-bar-container\">   <div class=\"progress-bar\" style=\"width: calc(%current% / %total% * 100%);\">   </div> </div>` ",
+"highlightStyle": "github",
+"highlightLines": true,
+"countIncrementalSlides": false,
+"ratio": "16:9",
+"navigation": {
+"scroll": false
+}
+});
+if (window.HTMLWidgets) slideshow.on('afterShowSlide', function (slide) {
+  window.dispatchEvent(new Event('resize'));
+});
+(function(d) {
+  var s = d.createElement("style"), r = d.querySelector(".remark-slide-scaler");
+  if (!r) return;
+  s.type = "text/css"; s.innerHTML = "@page {size: " + r.style.width + " " + r.style.height +"; }";
+  d.head.appendChild(s);
+})(document);
+
+(function(d) {
+  var el = d.getElementsByClassName("remark-slides-area");
+  if (!el) return;
+  var slide, slides = slideshow.getSlides(), els = el[0].children;
+  for (var i = 1; i < slides.length; i++) {
+    slide = slides[i];
+    if (slide.properties.continued === "true" || slide.properties.count === "false") {
+      els[i - 1].className += ' has-continuation';
+    }
+  }
+  var s = d.createElement("style");
+  s.type = "text/css"; s.innerHTML = "@media print { .has-continuation { display: none; } }";
+  d.head.appendChild(s);
+})(document);
+// delete the temporary CSS (for displaying all slides initially) when the user
+// starts to view slides
+(function() {
+  var deleted = false;
+  slideshow.on('beforeShowSlide', function(slide) {
+    if (deleted) return;
+    var sheets = document.styleSheets, node;
+    for (var i = 0; i < sheets.length; i++) {
+      node = sheets[i].ownerNode;
+      if (node.dataset["target"] !== "print-only") continue;
+      node.parentNode.removeChild(node);
+    }
+    deleted = true;
+  });
+})();</script>
+
+<script>
+(function() {
+  var links = document.getElementsByTagName('a');
+  for (var i = 0; i < links.length; i++) {
+    if (/^(https?:)?\/\//.test(links[i].getAttribute('href'))) {
+      links[i].target = '_blank';
+    }
+  }
+})();
+</script>
+
+<script>
+slideshow._releaseMath = function(el) {
+  var i, text, code, codes = el.getElementsByTagName('code');
+  for (i = 0; i < codes.length;) {
+    code = codes[i];
+    if (code.parentNode.tagName !== 'PRE' && code.childElementCount === 0) {
+      text = code.textContent;
+      if (/^\\\((.|\s)+\\\)$/.test(text) || /^\\\[(.|\s)+\\\]$/.test(text) ||
+          /^\$\$(.|\s)+\$\$$/.test(text) ||
+          /^\\begin\{([^}]+)\}(.|\s)+\\end\{[^}]+\}$/.test(text)) {
+        code.outerHTML = code.innerHTML;  // remove <code></code>
+        continue;
+      }
+    }
+    i++;
+  }
+};
+slideshow._releaseMath(document);
+</script>
+<!-- dynamically load mathjax for compatibility with self-contained -->
+<script>
+(function () {
+  var script = document.createElement('script');
+  script.type = 'text/javascript';
+  script.src  = 'https://mathjax.rstudio.com/latest/MathJax.js?config=TeX-MML-AM_CHTML';
+  if (location.protocol !== 'file:' && /^https?:/.test(script.src))
+    script.src  = script.src.replace(/^https?:/, '');
+  document.getElementsByTagName('head')[0].appendChild(script);
+})();
+</script>
+  </body>
+</html>
