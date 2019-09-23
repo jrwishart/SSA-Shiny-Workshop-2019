@@ -34,10 +34,7 @@ ui <- fluidPage(
                   selected = "trip_distance"),
       sliderInput(inputId = "alpha",
                   label = "Set the transparency level:",
-                  min = 0.01, max = 1, step = 0.1, value = 0.8),
-      dateRangeInput(inputId = "dates", label = "Select the Date Range",
-                     min = "2019-06-01", max = "2019-06-30",
-                     start = "2019-06-25", end = "2019-06-30")
+                  min = 0.01, max = 1, step = 0.1, value = 0.8)
     ),
     mainPanel(
       plotOutput(outputId = "myScatterplot")
@@ -47,16 +44,9 @@ ui <- fluidPage(
 
 # Define server instructions
 server <- function(input, output) {
-  
-  dat <- reactive({
-    days = input$dates
-    subset(trips_sample, as.Date(tpep_pickup_datetime) >= days[1] &
-             as.Date(tpep_pickup_datetime) <= days[2])
-  })
-  
   # Create the scatterplot output
   output$myScatterplot <- renderPlot({
-    ggplot(data = dat(), aes_string(x = input$x, y = input$y, colour = input$colour)) +
+    ggplot(data = trips_sample, aes_string(x = input$x, y = input$y, colour = input$colour)) +
        geom_point(alpha = input$alpha) +
       # Code to clean up the axis and colour labels
       labs(x = toTitleCase(sub("_", " ", input$x)),

@@ -1,18 +1,9 @@
-library(shiny)
-library(ggplot2)
-library(DT)
-library(dplyr)
-library(tools)
-load("june_2019_trips_sample.RData")
-nams = names(trips_sample)
-
-# Define UI 
-ui <- fluidPage(
-  title = "NYC Taxi and Limo Data Explorer:",
-  titlePanel("NYC Taxi and Limo Data Explorer:"),
+NYC_taxi_module_UI <- function(id) {
+  ns <- NS(id)
+  fluidPage(
   sidebarLayout(
     sidebarPanel(
-      selectInput(inputId = "y", 
+      selectInput(inputId = ns("y"), 
                   label = "Response Variable (y-axis):",
                   choices = c("Passenger count" = "passenger_count",
                               "Trip distance" = "trip_distance",
@@ -20,7 +11,7 @@ ui <- fluidPage(
                               "Tip amount" = "tip_amount",
                               "Total amount" = "total_amount"), 
                   selected = "fare_amount"),
-      selectInput(inputId = "x",
+      selectInput(inputId = ns("x"),
                   label = "Predictor Variable (x-axis):",
                   choices = c("Passenger count" = "passenger_count",
                               "Trip distance" = "trip_distance",
@@ -28,45 +19,48 @@ ui <- fluidPage(
                               "Tip amount" = "tip_amount",
                               "Total amount" = "total_amount"), 
                   selected = "trip_distance"),
-      selectInput(inputId = "colour",
+      selectInput(inputId = ns("colour"),
                   label = "Colour points with:",
                   choices = c("Vendor ID" = "Vendor_ID",
                               "Rate Code ID" = "Rate_Code_ID",
                               "Store and FWD Flag" = "store_and_fwd_flag",
                               "Payment Type" = "payment_type"), 
                   selected = "trip_distance"),
-      sliderInput(inputId = "alpha",
+      sliderInput(inputId = ns("alpha"),
                   label = "Set the transparency level:",
                   min = 0.01, max = 1, step = 0.1, value = 0.8),
-      dateRangeInput(inputId = "dates", label = "Select the Date Range",
+      dateRangeInput(inputId = ns("dates"), label = "Select the Date Range",
                      min = "2019-06-01", max = "2019-06-30",
                      start = "2019-06-01", end = "2019-06-30"),
-      sliderInput(inputId = "n", label = "Choose size of random sample",
+      sliderInput(inputId = ns("n"), label = "Choose size of random sample",
                   min = 2, max = 3000, value = 512),
-      actionButton(inputId = "sampButton", label = "Sample")
+      # uiOutput(outputId = ns("reactive_slider")),
+      actionButton(inputId = ns("sampButton"), label = "Sample")
     ),
     mainPanel(
-      plotOutput(outputId = "myScatterplot"),
-      dataTableOutput(outputId = "myDataTable")
+      plotOutput(outputId = ns("myScatterplot")),
+      dataTableOutput(outputId = ns("myDataTable"))
     )
   )
-)
-
-# Define server instructions
-server <- function(input, output, session) {
+  )
+}
+NYC_taxi_module <- function(input, output, session, trip_data) {
+  nams <- names(trip_data)
   
   dat <- reactive({
     days = input$dates
     # Subset the data
-    subset(trips_sample, as.Date(tpep_pickup_datetime) >= days[1] &
+    subset(trip_data, as.Date(tpep_pickup_datetime) >= days[1] &
              as.Date(tpep_pickup_datetime) <= days[2])
   })
   
-  subDat <- reactive({
-    input$sampButton
-    invalidateLater(3000)
-    dat() %>% sample_n(isolate(input$n))
-  })
+  subDat <- eventReactive(input$sampButton, {
+    dat_size = min(3000, nrow(dat()))
+    updateSliderInput(session, inputId = "n",
+                      max = dat_size,
+                      value = dat_size/2)
+    dat() %>% sample_n(input$n)
+  }, ignoreNULL = FALSE)
   
   # Create the scatterplot output
   output$myScatterplot <- renderPlot({
@@ -85,6 +79,3 @@ server <- function(input, output, session) {
     datatable(data = subDat()[, cols], rownames = FALSE)
   })
 }
-
-# Run the app
-shinyApp(ui = ui, server = server)

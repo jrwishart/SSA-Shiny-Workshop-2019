@@ -25,13 +25,9 @@ server <- function(input, output) {
     
     output$bin_chooser <- renderUI({
         if(input$variable %in% numeric_vars) {
-            sum_dat = summary(abs(diff(diamond_dat[, input$variable])))
-            mn = sum_dat[1]
-            md = sum_dat[3]
-            mx = sum_dat[5]
-            sliderInput("bin_width", "Choose the histogram bin width:",
-                        min = mn, max = mx,
-                        step = (mx - mn)/50, value = md)
+            sliderInput("bin_num", "Choose the number of bins:",
+                        min = 1, max = 100,
+                        step = 1, value = 10)
         } else {
             br()
         }
@@ -40,8 +36,9 @@ server <- function(input, output) {
     output$outputPlot <- renderPlot({
         p <- ggplot(diamonds, aes_string(x = input$variable)) 
         if(input$variable %in% numeric_vars) {
-            bins = ifelse(is.null(input$bin_width), 30, input$bin_width)
-            p <- p + geom_histogram(binwidth = bins)
+            req(input$bin_num)
+            bins = input$bin_num
+            p <- p + geom_histogram(bins = bins)
         } else {
             p <- p + geom_bar()
         }

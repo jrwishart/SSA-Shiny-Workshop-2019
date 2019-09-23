@@ -38,8 +38,8 @@ ui <- fluidPage(
                   label = "Set the transparency level:",
                   min = 0.01, max = 1, step = 0.1, value = 0.8),
       dateRangeInput(inputId = "dates", label = "Select the Date Range",
-                     min = "2019-01-01", max = "2019-06-30",
-                     start = "2019-01-28", end = "2019-06-30"),
+                     min = "2019-06-01", max = "2019-06-30",
+                     start = "2019-06-28", end = "2019-06-30"),
       sliderInput(inputId = "n", label = "Choose size of random sample",
                   min = 2, max = 3000, value = 512),
       actionButton(inputId = "sampButton", label = "Sample")
@@ -52,7 +52,7 @@ ui <- fluidPage(
 )
 
 # Define server instructions
-server <- function(input, output) {
+server <- function(input, output, session) {
   
   dat <- reactive({
     days = input$dates
@@ -63,6 +63,9 @@ server <- function(input, output) {
   
   subDat <- reactive({ 
     input$sampButton
+    max_slider = min(3000, nrow(dat()))
+    updateSliderInput(session, inputId = "n",
+                      max = max_slider, value = min(max_slider, isolate(input$n)))
     dat() %>% sample_n(isolate(input$n))
   })
   

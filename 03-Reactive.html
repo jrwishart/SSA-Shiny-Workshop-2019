@@ -31,8 +31,8 @@ class: center, middle, inverse, title-slide
 ### Visual representation
 
 .pull-left[
-<div id="htmlwidget-928da2f1716a36166347" style="width:504px;height:210px;" class="grViz html-widget"></div>
-<script type="application/json" data-for="htmlwidget-928da2f1716a36166347">{"x":{"diagram":"digraph G\n{\n    rankdir = LR;\n  \n  node[shape = cds, label = \"Reactive Source\"]\n  A\n\n  node[shape = hexagon, label = \"Reactive Conductor\"]\n  B\n\n  node[shape = oval, label = \"Reactive Endpoint\"]\n  C\n\n  edge[color = \"transparent\"]\n  A -> B\n  B -> C\n}\n","config":{"engine":"dot","options":null}},"evals":[],"jsHooks":[]}</script>
+<div id="htmlwidget-b7e1d0a1601b4a1ce1d1" style="width:504px;height:210px;" class="grViz html-widget"></div>
+<script type="application/json" data-for="htmlwidget-b7e1d0a1601b4a1ce1d1">{"x":{"diagram":"digraph G\n{\n    rankdir = LR;\n  \n  node[shape = cds, label = \"Reactive Source\"]\n  A\n\n  node[shape = hexagon, label = \"Reactive Conductor\"]\n  B\n\n  node[shape = oval, label = \"Reactive Endpoint\"]\n  C\n\n  edge[color = \"transparent\"]\n  A -> B\n  B -> C\n}\n","config":{"engine":"dot","options":null}},"evals":[],"jsHooks":[]}</script>
 ]
 .pull-right[
 
@@ -54,8 +54,8 @@ class: center, middle, inverse, title-slide
 * User input is the reactive source
 * User output depends directly on the source
 
-<div id="htmlwidget-2bd220e3b027bcdfdd53" style="width:504px;height:210px;" class="grViz html-widget"></div>
-<script type="application/json" data-for="htmlwidget-2bd220e3b027bcdfdd53">{"x":{"diagram":"digraph simple\n{\n  rankdir = LR;\n  \n  node[shape = cds, label = \"input$numBins\", xlabel = \"Reactive source\"]\n  A\n\n  node[shape = oval, label = \"output$myHistogram\", xlabel = \"Reactive Endpoint\"]\n  C\n\n  A -> C\n}","config":{"engine":"dot","options":null}},"evals":[],"jsHooks":[]}</script>
+<div id="htmlwidget-c94dc0a2c35e4952ad4a" style="width:504px;height:210px;" class="grViz html-widget"></div>
+<script type="application/json" data-for="htmlwidget-c94dc0a2c35e4952ad4a">{"x":{"diagram":"digraph simple\n{\n  rankdir = LR;\n  \n  node[shape = cds, label = \"input$numBins\", xlabel = \"Reactive source\"]\n  A\n\n  node[shape = oval, label = \"output$myHistogram\", xlabel = \"Reactive Endpoint\"]\n  C\n\n  A -> C\n}","config":{"engine":"dot","options":null}},"evals":[],"jsHooks":[]}</script>
 
 ---
 
@@ -63,12 +63,12 @@ class: center, middle, inverse, title-slide
 
 
 .pull-left[
-<div id="htmlwidget-a4c98955f3b2016e9a5b" style="width:504px;height:210px;" class="grViz html-widget"></div>
-<script type="application/json" data-for="htmlwidget-a4c98955f3b2016e9a5b">{"x":{"diagram":"digraph simplet\n{\n  rankdir = LR;\n  \n  node[shape = cds] \n  A[label = \"input$numBins\"] B[label = \"input$data\"]\n\n  node[shape = oval, label = \"output$myHistogram\"]\n  C\n\n  A -> C\n  B -> C\n}\n","config":{"engine":"dot","options":null}},"evals":[],"jsHooks":[]}</script>
+<div id="htmlwidget-824aa0c042a70228b289" style="width:504px;height:210px;" class="grViz html-widget"></div>
+<script type="application/json" data-for="htmlwidget-824aa0c042a70228b289">{"x":{"diagram":"digraph simplet\n{\n  rankdir = LR;\n  \n  node[shape = cds] \n  A[label = \"input$numBins\"] B[label = \"input$data\"]\n\n  node[shape = oval, label = \"output$myHistogram\"]\n  C\n\n  A -> C\n  B -> C\n}\n","config":{"engine":"dot","options":null}},"evals":[],"jsHooks":[]}</script>
 
 
-<div id="htmlwidget-173e7a995f6002c3a991" style="width:504px;height:210px;" class="grViz html-widget"></div>
-<script type="application/json" data-for="htmlwidget-173e7a995f6002c3a991">{"x":{"diagram":"digraph simpleoutt\n{\n  rankdir = LR;\n  \n  node[shape = cds] \n  A[label = \"input$data\"]\n\n  node[shape = oval]\n  B[label = \"output$myHistogram\"] C[label = \"output$myScatterplot\"]\n\n  A -> B\n  A -> C\n}\n","config":{"engine":"dot","options":null}},"evals":[],"jsHooks":[]}</script>
+<div id="htmlwidget-d5f551982af83424a571" style="width:504px;height:210px;" class="grViz html-widget"></div>
+<script type="application/json" data-for="htmlwidget-d5f551982af83424a571">{"x":{"diagram":"digraph simpleoutt\n{\n  rankdir = LR;\n  \n  node[shape = cds] \n  A[label = \"input$data\"]\n\n  node[shape = oval]\n  B[label = \"output$myHistogram\"] C[label = \"output$myScatterplot\"]\n\n  A -> B\n  A -> C\n}\n","config":{"engine":"dot","options":null}},"evals":[],"jsHooks":[]}</script>
 ] 
 .pull-right[
 
@@ -201,10 +201,6 @@ To do this
 1. _Optional_: Make the choice labels pretty (and axis titles)
     - `choices = c("Vendor ID" = "Vendor_ID", ...)`
 
-### Solution
-
-To appear in `apps/sol-NYCT-01.R`
-
 ---
 
 ### Reactive Conductor 
@@ -214,8 +210,8 @@ To appear in `apps/sol-NYCT-01.R`
     - one or more dependencies (parents)
     - one or more dependents (children)
 
-<div id="htmlwidget-62320f79b2d9dd398624" style="width:504px;height:210px;" class="grViz html-widget"></div>
-<script type="application/json" data-for="htmlwidget-62320f79b2d9dd398624">{"x":{"diagram":"digraph cond {\n        rankdir = LR;\n  \n        node[shape = cds] \n        A[label = \"input$category1\"] B[label = \"input$category2\"]\n      \n        node[shape = hexagon]\n        C[label = \"dat()\"]\n\n        node[shape = oval]\n        D[label = \"output$myHistogram\"] E[label = \"output$myScatterplot\"]\n      \n        A -> C\n        B -> C\n        C -> D\n        C -> E\n      }","config":{"engine":"dot","options":null}},"evals":[],"jsHooks":[]}</script>
+<div id="htmlwidget-03322c404c4455ec05a9" style="width:504px;height:210px;" class="grViz html-widget"></div>
+<script type="application/json" data-for="htmlwidget-03322c404c4455ec05a9">{"x":{"diagram":"digraph cond {\n        rankdir = LR;\n  \n        node[shape = cds] \n        A[label = \"input$category1\"] B[label = \"input$category2\"]\n      \n        node[shape = hexagon]\n        C[label = \"dat()\"]\n\n        node[shape = oval]\n        D[label = \"output$myHistogram\"] E[label = \"output$myScatterplot\"]\n      \n        A -> C\n        B -> C\n        C -> D\n        C -> E\n      }","config":{"engine":"dot","options":null}},"evals":[],"jsHooks":[]}</script>
 
 * Useful if computing the common data takes time.
 
@@ -269,8 +265,8 @@ server &lt;- function(input, output) {
 * Let's filter by time!
 
 .pull-left[
-<div id="htmlwidget-583e13c1651409bc9f0d" style="width:504px;height:210px;" class="grViz html-widget"></div>
-<script type="application/json" data-for="htmlwidget-583e13c1651409bc9f0d">{"x":{"diagram":"digraph conductor\n{\n  rankdir = LR;\n  \n  node[shape = cds] \n  A[label = \"input$dates\"]  \n\n  node[shape = hexagon]\n  B[label = \"dat()\"] \n\n  node[shape = oval]\n  C[label = \"output$myScatterplot\"] D[label=\"output$myDataTable\"]\n\n  A -> B\n  B -> C\n  B -> D\n}","config":{"engine":"dot","options":null}},"evals":[],"jsHooks":[]}</script>
+<div id="htmlwidget-b26efe0c5b1c290a9dac" style="width:504px;height:210px;" class="grViz html-widget"></div>
+<script type="application/json" data-for="htmlwidget-b26efe0c5b1c290a9dac">{"x":{"diagram":"digraph conductor\n{\n  rankdir = LR;\n  \n  node[shape = cds] \n  A[label = \"input$dates\"]  \n\n  node[shape = hexagon]\n  B[label = \"dat()\"] \n\n  node[shape = oval]\n  C[label = \"output$myScatterplot\"] D[label=\"output$myDataTable\"]\n\n  A -> B\n  B -> C\n  B -> D\n}","config":{"engine":"dot","options":null}},"evals":[],"jsHooks":[]}</script>
 ]
 .pull-right[
 
@@ -352,8 +348,8 @@ Open `apps/NYCT-02.R`
 * Might be better to plot a random sample for speed.
 * Introduce another reactive to take a random sample.
 
-<div id="htmlwidget-2bfd60125b009ae9ede1" style="width:504px;height:210px;" class="grViz html-widget"></div>
-<script type="application/json" data-for="htmlwidget-2bfd60125b009ae9ede1">{"x":{"diagram":"digraph conductor\n{\n  rankdir = LR;\n  \n  node[shape = cds] \n  A[label = \"input$dates\"] A1[label = \"input$n\"]\n\n  node[shape = hexagon]\n  B1[label = \"dat()\"]\n  B[label = \"subDat()\"] \n\n  node[shape = oval]\n  C[label = \"output$myScatterplot\"] D[label=\"output$myDataTable\"]\n\n  A -> B1\n  A1 -> B\n  B1 -> B\n  B -> C\n  B -> D\n}","config":{"engine":"dot","options":null}},"evals":[],"jsHooks":[]}</script>
+<div id="htmlwidget-74bc103dee2adf8bcc7d" style="width:504px;height:210px;" class="grViz html-widget"></div>
+<script type="application/json" data-for="htmlwidget-74bc103dee2adf8bcc7d">{"x":{"diagram":"digraph conductor\n{\n  rankdir = LR;\n  \n  node[shape = cds] \n  A[label = \"input$dates\"] A1[label = \"input$n\"]\n\n  node[shape = hexagon]\n  B1[label = \"dat()\"]\n  B[label = \"subDat()\"] \n\n  node[shape = oval]\n  C[label = \"output$myScatterplot\"] D[label=\"output$myDataTable\"]\n\n  A -> B1\n  A1 -> B\n  B1 -> B\n  B -> C\n  B -> D\n}","config":{"engine":"dot","options":null}},"evals":[],"jsHooks":[]}</script>
 
 ---
 
@@ -403,8 +399,8 @@ mydat &lt;- eventReactive(input$x, {
 
 ## Visually 
 
-<div id="htmlwidget-5104a1c961c78eb611d8" style="width:504px;height:210px;" class="grViz html-widget"></div>
-<script type="application/json" data-for="htmlwidget-5104a1c961c78eb611d8">{"x":{"diagram":"digraph conductor\n{\n  rankdir = LR;\n  \n  node[shape = cds] \n  A[label = \"input$dates\"] A1[label = \"input$n\"] A2[label = \"input$button\"]\n\n  node[shape = hexagon]\n  B1[label = \"dat()\"]\n  B[label = \"subDat()\"] \n\n  node[shape = oval]\n  C[label = \"output$myScatterplot\"] D[label=\"output$myDataTable\"]\n\n  A -> B1\n  A1 -> B[style=\"dotted\"]\n  A2 -> B\n  B1 -> B[style=\"dotted\"]\n  B -> C\n  B -> D\n}","config":{"engine":"dot","options":null}},"evals":[],"jsHooks":[]}</script>
+<div id="htmlwidget-897f00323c68b53af597" style="width:504px;height:210px;" class="grViz html-widget"></div>
+<script type="application/json" data-for="htmlwidget-897f00323c68b53af597">{"x":{"diagram":"digraph conductor\n{\n  rankdir = LR;\n  \n  node[shape = cds] \n  A[label = \"input$dates\"] A1[label = \"input$n\"] A2[label = \"input$button\"]\n\n  node[shape = hexagon]\n  B1[label = \"dat()\"]\n  B[label = \"subDat()\"] \n\n  node[shape = oval]\n  C[label = \"output$myScatterplot\"] D[label=\"output$myDataTable\"]\n\n  A -> B1\n  A1 -> B[style=\"dotted\"]\n  A2 -> B\n  B1 -> B[style=\"dotted\"]\n  B -> C\n  B -> D\n}","config":{"engine":"dot","options":null}},"evals":[],"jsHooks":[]}</script>
 
 * An updated `input$n` or `dat()` does __not__ invalidate `subDat()`
     - Both `input$n` and `dat()` are isolated.
@@ -444,8 +440,8 @@ subDat &lt;- reactive({
   })
 ```
 
-<div id="htmlwidget-6d1015777e318cb11b2e" style="width:504px;height:200px;" class="grViz html-widget"></div>
-<script type="application/json" data-for="htmlwidget-6d1015777e318cb11b2e">{"x":{"diagram":"digraph conductort\n{\n  rankdir = LR;\n  \n  node[shape = cds] \n  A[label = \"input$dates\"] A1[label = \"input$n\"] A2[label = \"input$button\"]\n\n  node[shape = hexagon]\n  B1[label = \"dat()\"]\n  B[label = \"subDat()\"] \n\n  A -> B1\n  A1 -> B[style=\"dotted\"]\n  A2 -> B\n  B1 -> B\n}\n","config":{"engine":"dot","options":null}},"evals":[],"jsHooks":[]}</script>
+<div id="htmlwidget-77c3329b20868b573ff4" style="width:504px;height:200px;" class="grViz html-widget"></div>
+<script type="application/json" data-for="htmlwidget-77c3329b20868b573ff4">{"x":{"diagram":"digraph conductort\n{\n  rankdir = LR;\n  \n  node[shape = cds] \n  A[label = \"input$dates\"] A1[label = \"input$n\"] A2[label = \"input$button\"]\n\n  node[shape = hexagon]\n  B1[label = \"dat()\"]\n  B[label = \"subDat()\"] \n\n  A -> B1\n  A1 -> B[style=\"dotted\"]\n  A2 -> B\n  B1 -> B\n}\n","config":{"engine":"dot","options":null}},"evals":[],"jsHooks":[]}</script>
 ]
 
 * Open up `apps/sol-NYCT-03-Alternative.R` to see this.
@@ -459,8 +455,8 @@ subDat &lt;- reactive({
     - An `isolate` can be used in a reactive to specify which reactions are needed
 
 .pull-left[
-<div id="htmlwidget-987b51c5950781b832ac" style="width:504px;height:210px;" class="grViz html-widget"></div>
-<script type="application/json" data-for="htmlwidget-987b51c5950781b832ac">{"x":{"diagram":"digraph double\n{\n  rankdir = LR;\n  \n  node[shape = cds] \n  A[label = \"input$w\"]  B[label = \"input$x\"] C[label = \"input$y\"] D[label=\"input$z\"]\n\n  node[shape = hexagon]\n  E[label = \"myReactive()\"]\n  \n  \n  A -> E\n  B -> E\n  C -> E[style=\"dotted\"]\n  D -> E[style=\"dotted\"]\n}\n","config":{"engine":"dot","options":null}},"evals":[],"jsHooks":[]}</script>
+<div id="htmlwidget-d61ba74d28198fa251cf" style="width:504px;height:210px;" class="grViz html-widget"></div>
+<script type="application/json" data-for="htmlwidget-d61ba74d28198fa251cf">{"x":{"diagram":"digraph double\n{\n  rankdir = LR;\n  \n  node[shape = cds] \n  A[label = \"input$w\"]  B[label = \"input$x\"] C[label = \"input$y\"] D[label=\"input$z\"]\n\n  node[shape = hexagon]\n  E[label = \"myReactive()\"]\n  \n  \n  A -> E\n  B -> E\n  C -> E[style=\"dotted\"]\n  D -> E[style=\"dotted\"]\n}\n","config":{"engine":"dot","options":null}},"evals":[],"jsHooks":[]}</script>
 ]
 .pull-right[
 
@@ -538,9 +534,9 @@ Open `apps/NYCT-04.R`
 
 ---
 
-# Observers vs reactive 
+## Observers vs reactive 
 
-## Observers vs Reactive
+### Observers vs Reactive
 
 
 &lt;table class='gmisc_table' style='border-collapse: collapse; margin-top: 1em; margin-bottom: 1em;' &gt;
@@ -641,12 +637,6 @@ Write an app that
     - categorical, it creates a barchart.
 3. Add a control for the histogram to change the bin width
 4. Hide the control when the user selects a categorical variable.
-
-
-### invalidateLater
-
-* Can force a reactive to invalidate
-    - forces re-evaluation of the reactive or observer.
     </textarea>
 <style data-target="print-only">@media screen {.remark-slide-container{display:block;}.remark-slide-scaler{box-shadow:none;}}</style>
 <script src="https://remarkjs.com/downloads/remark-latest.min.js"></script>

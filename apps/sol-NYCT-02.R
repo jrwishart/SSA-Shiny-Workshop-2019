@@ -57,7 +57,7 @@ server <- function(input, output) {
   dat <- reactive({
     days = input$dates
     # Subset the data
-    subset(trips, as.Date(tpep_pickup_datetime) >= days[1] &
+    subset(trips_sample, as.Date(tpep_pickup_datetime) >= days[1] &
              as.Date(tpep_pickup_datetime) <= days[2])
   })
   

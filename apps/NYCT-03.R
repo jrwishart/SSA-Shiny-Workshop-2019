@@ -52,7 +52,7 @@ ui <- fluidPage(
 )
 
 # Define server instructions
-server <- function(input, output) {
+server <- function(input, output, session) {
   
   dat <- reactive({
     days = input$dates
@@ -62,6 +62,9 @@ server <- function(input, output) {
   })
   
   subDat <- reactive({
+    max_slider = min(3000, nrow(dat()))
+    updateSliderInput(session, inputId = "n",
+                      max = max_slider, value = min(max_slider, input$n))
     dat() %>% sample_n(input$n)
   })
   

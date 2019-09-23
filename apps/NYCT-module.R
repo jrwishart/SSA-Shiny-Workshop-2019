@@ -64,7 +64,6 @@ server <- function(input, output, session) {
   
   subDat <- reactive({
     input$sampButton
-    invalidateLater(3000)
     dat() %>% sample_n(isolate(input$n))
   })
   

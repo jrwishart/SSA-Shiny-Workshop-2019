@@ -25,10 +25,10 @@ class: center, middle, inverse, title-slide
 
 ---
 
-# Modules
+### Modules
 
 .blockquote[ 
-# <i class="fas  fa-comment-dots "></i> RStudio description
+### <i class="fas  fa-comment-dots "></i> RStudio description
 A module is a self-contained, composable component of a Shiny App]
 
 * Self-contained: like a function
@@ -40,7 +40,7 @@ A module is a self-contained, composable component of a Shiny App]
 
 ---
 
-# Why use modules?
+### Why use modules?
 
 * Reusability: Why reinvent the wheel all the time?
 * Can bundle the common app features
@@ -50,7 +50,7 @@ A module is a self-contained, composable component of a Shiny App]
 
 ---
 
-# Why not just use functions?
+### Why not just use functions?
 
 * Can conceptually use functions.
     - UI function: called from app UI
@@ -58,9 +58,8 @@ A module is a self-contained, composable component of a Shiny App]
 
 ---
 
-# Intro app revisited
+### Intro app revisited
 
-.scroll-box-14[
 
 ```r
 ui &lt;- fluidPage(
@@ -82,18 +81,14 @@ server &lt;- function(input, output) {
 }
 shinyApp(ui, server)
 ```
-]
 
 * Let's write a function to do the same task
 
 ---
 
-# Intro app revisited
-
-
+### Intro app revisited
 
 .pull-left[
-.scroll-box-8[
 
 ```r
 *my_selector &lt;- function() {
@@ -114,7 +109,7 @@ server &lt;- function(input, output) {
 }
 shinyApp(ui, server)
 ```
-]]
+]
 
 .pull-right[
 
@@ -126,10 +121,11 @@ shinyApp(ui, server)
 
 ---
 
-## All seems well, lets rinse and repeat
+### All seems well, lets rinse and repeat
 
-* See `apps/functions02.R`
+* See `apps/functions-02.R`
 
+.scroll-box-20[
 
 ```r
 my_selector &lt;- function() {
@@ -158,13 +154,14 @@ server &lt;- function(input, output) {
 }
 shinyApp(ui, server)
 ```
+]
 
---- 
+---
 
-# How to fix this
+* Can be fixed, if `inputId`s are unique, see `apps/functions-03.R`.
 
-* See `apps/functions-03.R`
 
+.scroll-box-20[
 
 ```r
 my_selector &lt;- function(id) {
@@ -195,25 +192,27 @@ server &lt;- function(input, output) {
 }
 shinyApp(ui, server)
 ```
+]
 
 ---
 
-# What happened using the function approach?
+### What happened using the function approach?
 
-* *Problem*: Input and Output IDs in Shiny apps share a global namespace[^1]
+* *Problem*: Input and Output IDs in Shiny apps share a global namespace `\(^1\)`
     - Each ID __must__ be unique across whole app.
     - Developer must ensure input and output IDs are unique.
     - So function must generate unique IDs.
 
-* *Solution*: Use different namespaces[^2]
+* *Solution*: Use different namespaces `\(^2\)`
     - Modules add namespacing to Shiny UI and server framework.
 
-[^1] : Provide "spaces" for "names". They provide a context for looking up the value of an object associated with a name. http://r-pkgs.had.co.nz/namespace.html
-[^2] : Very important for robust package creation (and getting on CRAN). More for Pierre to enlighten 
+`\(^1\)`: Provide "spaces" for "names". They provide a context for looking up the value of an object associated with a name. http://r-pkgs.had.co.nz/namespace.html
+
+`\(^2\)` : Very important for robust package creation (and getting on CRAN). More for Pierre to enlighten 
 
 ---
 
-# `NS`: Shiny's namespace helper function
+### `NS`: Shiny's namespace helper function
 
 * `NS(id)` - Creates a prefix to some id string to create a namespace.
 
@@ -227,15 +226,9 @@ ns("Tuesday") # The package workshop namespace
 
 ---
 
-# Module construction
+### Module construction
 
-* Construction: Two functions construct the module
-    * A UI function with use of `NS`
-    * A server function
-        - *Do not* use any namespace changes here.
-* Suggested naming convention below
-    - Replace `my_module_` with the desired name of your module
-
+.pull-left[
 
 ```r
 library(shiny)
@@ -252,15 +245,20 @@ my_module &lt;- function(input, output, session) {
   # Business as usual.
 }
 ```
+]
+.pull-right[
+* Construction: Two functions construct the module
+    * A UI function with use of `NS`
+    * A server function
+        - *Do not* use any namespace changes here.
+* Suggested naming convention below
+    - Replace `my_module_` with the desired name of your module
+]
 
 ---
 
-# Module implementation
+### Module implementation
 
-* Place the module UI function in the ui
-    - Give it a unique string id for that module.
-* Place the module server logic in the app server function body.
-    - Link it to its module UI function with the __same__ string id.
 
 
 ```r
@@ -275,7 +273,7 @@ server &lt;- function(input, output) {
 
 ---
 
-# Simple module walkthrough
+### Simple module walkthrough
 
 * Create Module that has a `selectInput` with the capital letters of the alphabet and a reactive Text output that shows the chosen letter. 
 
@@ -283,7 +281,7 @@ server &lt;- function(input, output) {
 ```r
 letter_module_UI &lt;- function(id) {
   ns &lt;- NS(id)
-  selectInput(inputId = ns("variablechoice"),
+  selectInput(inputId = ns("letterchoice"),
               label = "Choose a letter",
               choices = LETTERS[1:26])
 }
@@ -296,7 +294,7 @@ letter_module &lt;- function(input, output, session) {
 
 ---
 
-# Our first modularised app
+### Our first modularised app
 
 * Can run this in `apps/modules-01.R`
 
@@ -304,7 +302,7 @@ letter_module &lt;- function(input, output, session) {
 ```r
 letter_module_UI &lt;- function(id) {
   ns &lt;- NS(id)
-  selectInput(inputId = ns("variablechoice"),
+  selectInput(inputId = ns("letterchoice"),
               label = "Choose a letter",
               choices = LETTERS[1:26])
 }
@@ -326,7 +324,7 @@ shinyApp(ui, server)
 
 ---
 
-# How to incorporate modules
+### How to incorporate modules
 
 1. Directly place the module UI and server functions inline
     - In `app.R` or `ui.R` or `server.R`
@@ -341,7 +339,7 @@ shinyApp(ui, server)
 
 ---
 
-# Generalised Modules
+### Generalised Modules
 
 * Modules are built of specifically formatted functions
 * Can add other arguments to the module function
@@ -365,7 +363,7 @@ library(shiny)
 
 ---
 
-## Example
+###Example
 
 
 ```r
@@ -391,10 +389,11 @@ my_module &lt;- function(input, output, session, extra_var) {
 
 ---
 
-# Back to our weird letter module
+### Back to our weird letter module
 
 * See `apps/modules-02.R`
 
+.scroll-box-20[
 
 ```r
 letter_module_UI &lt;- function(id, my_label = "Choose a letter") {
@@ -441,12 +440,11 @@ server &lt;- function(input, output) {
 }
 shinyApp(ui, server)
 ```
-
-* Still static extra inputs and outputs
+]
 
 ---
 
-# Can pass reactive objects too
+### Can pass reactive objects too
 
 * Recall the following syntax for `reactive` objects is
     - `my_reactive &lt;- reactive({ input$something; other_reactive(); })`
@@ -455,8 +453,9 @@ shinyApp(ui, server)
 
 ---
 
-# Pass reactive input into a Module
+### Pass reactive input into a Module
 
+.pull-left[
 * When passing the reactive around
     - Don't evaluate the reactive expression.
     - Use the reference or reactive expression.
@@ -464,7 +463,10 @@ shinyApp(ui, server)
 * When creating further outputs
     - You want to evaluate the reactive
     - Use the form `my_reactive()` (include the `()` suffix)
+]
 
+.pull-right[
+.scroll-box-20[
 
 ```r
 my_module_ID &lt;- function(id) {
@@ -490,10 +492,11 @@ server &lt;- function(input, output) {
   })
 }
 ```
+]]
 
---- 
+---
 
-# Giving reactive outputs from a module
+### Returning reactive outputs from a module
 
 * Desired outputs should be place in a `reactive` at the end of the module function.
 
@@ -508,10 +511,11 @@ my_module &lt;- function(input, output, session, ...) {
 
 ---
 
-# Example using extra reactive input in modules
+### Example using extra reactive input in modules
 
 * See `apps/modules-03.R`
 
+.scroll-box-20[
 
 ```r
 letter_module_UI &lt;- function(id, my_label = "Choose a letter") {
@@ -561,6 +565,7 @@ server &lt;- function(input, output) {
 }
 shinyApp(ui, server)
 ```
+]
 
 ---
 
@@ -575,14 +580,10 @@ shinyApp(ui, server)
 2. Create a navbar panel layout with the tabs being
     - Manhattan, Bronx, Brooklyn and Queens
     - the tabs analyse only the data from their own Borough.
-    
-    
+
+* Solution in `sol-NYCT-modularised.R` and `sol-NYCT-module.R`
+
 ---
-
-## Solution in files
-
-
---- 
 
 ### Final Exercise: 
 
@@ -594,8 +595,9 @@ shinyApp(ui, server)
 
 ### App layout
 
+
 .pull-left[
-.scroll-box-14[
+.scroll-box-20[
 
 ```r
 library(shiny)
@@ -668,17 +670,16 @@ server &lt;- function(input, output, session) {
 
 shinyApp(ui, server)
 ```
-]]
+]
+]
+
 .pull-right[
 
 * Module 1 allows user to selet a dataset from core datasets package.
-    - Returns a list with elements 
-        - the chosen dataset (as a reactive!)
-        - an integer count
-    - Notice how 
-        - the reactive is returned as an expression (no ())
-        - The module input$count variable is wrapped in a reactive.
-* Module 2 built to take the input of the dataset and count from Module 1.
+    - Returns a list with two elements, the user chosen dataset (as a reactive!) and an integer count 
+    - Notice how the reactive is returned as an expression (no ()) and The module `input$count` variable is wrapped in a reactive.
+* Module 2 is built to take the input of the reactive dataset and reactive count from Module 1.
+
 ]
 
 ---
@@ -689,7 +690,7 @@ shinyApp(ui, server)
 * Create a new Module 3 that takes the selected dataset and creates a scatterplot with a special extra single red point that is the mean created above.
 * Place the scatterplot with the extra red point below the existing summary table.
 
-&lt;img src="images/final-module-goal.PNG" style="width: 739px; height: 400px;"/&gt;
+&lt;img src="images/final-module-goal.PNG" style="height: 300px;"/&gt;
 
 ---
 

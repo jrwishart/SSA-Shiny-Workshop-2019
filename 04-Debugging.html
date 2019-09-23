@@ -5,15 +5,15 @@
     <meta charset="utf-8" />
     <meta name="author" content="Dr. Justin R Wishart" />
     <link href="libs/remark-css-0.0.1/default.css" rel="stylesheet" />
-    <link href="libs/remark-css-0.0.1/rutgers-fonts.css" rel="stylesheet" />
-    <link rel="stylesheet" href="ssa-shiny.css" type="text/css" />
+    <link rel="stylesheet" href="assets\ssa-shiny.css" type="text/css" />
+    <link rel="stylesheet" href="assets\ssa-shiny-fonts.css" type="text/css" />
   </head>
   <body>
     <textarea id="source">
 class: center, middle, inverse, title-slide
 
 # Shiny Applet Creation
-## Modules and Debugging
+## Debugging
 ### Dr. Justin R Wishart
 ### 23rd September 2019
 
@@ -21,10 +21,6 @@ class: center, middle, inverse, title-slide
 
 
 
-
----
-
-## Defensive programming
 
 ### Require certain states
 
@@ -56,10 +52,10 @@ Cancel the current output (or observer) if a condition isn't met.
 server &lt;- function(input, output) {
   output$plot &lt;- renderPlot({
 *   validate(
-*     need(input$in1, 'Check at least one letter!'),
-*     need(input$in2 != '', 'Please choose a state.')
+*     need(input$data, 'Choose dataset first'),
+*     need(input$title, "Please type the plot title.")
 *   )
-    plot(1:10, main = paste(c(input$in1, input$in2), collapse = ', '))
+    plot(input$data, main = input$title)
   })
 }
 ```
@@ -90,7 +86,7 @@ Article [here](https://shiny.rstudio.com/articles/debugging.html) from Rstudio
 ## Browser commands
 
 .pull-left[
-![](images/browser)
+![](images/browser.png)
 ]
 .pull-right[
 * `browser` is similar to a breakpoint with some nuances.
@@ -108,10 +104,10 @@ Article [here](https://shiny.rstudio.com/articles/debugging.html) from Rstudio
 
 
 ```r
-options(shiny.error = browser)
+options(shiny.error = recover)
 ```
 
-* This will launch the browser when an error occurs.
+* This will launch a debugger prompt when an error occurs in the app.
     - Can be useful to inspect the current environment shiny was in when it failed.
 * Remember to turn it off when done.
 
