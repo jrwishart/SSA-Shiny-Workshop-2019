@@ -27,7 +27,7 @@ class: center, middle, inverse, title-slide
 
 * <i class="fas  fa-wifi "></i> Wifi connectivity
     - Network Name: Macquarie Events
-    - Browse to [www.mq.edu.au](www.mq.edu.au) and follow to prompts and enter passcode: stats2019
+    - Browse to [https://wifiportal.mq.edu.au](https://wifiportal.mq.edu.au) and follow to prompts and enter passcode: stats2019
 * <i class="fab  fa-github "></i> Workshop Materials available at repo [github.com/jrwishart/SSA-Shiny-Workshop-2019](https://github.com/jrwishart/SSA-Shiny-Workshop-2019)
     - Clone within Rstudio (need `git` setup)
         - `Create New project` &gt; `Version control` &gt; `Git`
@@ -555,7 +555,7 @@ ui &lt;- fluidPage(
 ### Exercise : Add another input to the basic faithful histogram app
 
 * Add a slider to control the number of bins with the following arguments
-    - __inputId = numBins__
+    - __inputId = "numBins"__
     - __label = "Select number of bins"__
     - __min = 1__ 
     - __max = 50__

@@ -1,26 +1,31 @@
-<!DOCTYPE html>
-<html xmlns="http://www.w3.org/1999/xhtml" lang="" xml:lang="">
-  <head>
-    <title>Shiny Applet Creation</title>
-    <meta charset="utf-8" />
-    <meta name="author" content="Dr. Justin R Wishart" />
-    <link href="libs/remark-css-0.0.1/default.css" rel="stylesheet" />
-    <link rel="stylesheet" href="assets\ssa-shiny.css" type="text/css" />
-    <link rel="stylesheet" href="assets\ssa-shiny-fonts.css" type="text/css" />
-  </head>
-  <body>
-    <textarea id="source">
-class: center, middle, inverse, title-slide
-
-# Shiny Applet Creation
-## User Interface (UI)
-### Dr. Justin R Wishart
-### 23rd September 2019
-
+---
+title: "Shiny Applet Creation"
+author: "Dr. Justin R Wishart"
+date: "23rd September 2019"
+output:
+  xaringan::moon_reader:
+    css: ["default", "assets/ssa-shiny.css", "assets/ssa-shiny-fonts.css"]
+    lib_dir: libs
+    beforeInit: ["assets/remark-zoom.js", "https://platform.twitter.com/widgets.js"]
+    nature:
+      slideNumberFormat:  |
+        <div class="progress-bar-container">
+          <div class="progress-bar" style="width: calc(%current% / %total% * 100%);">
+          </div>
+        </div>`
+      highlightStyle: github
+      highlightLines: true
+      countIncrementalSlides: false
+      ratio: '16:9' ## alternatives '16:9' or '4:3' or others e.g. 13:9
+      navigation:
+        scroll: false ## disable slide transitions by scrolling
+subtitle: User Interface (UI)
 ---
 
-
-
+```{r setup, echo = FALSE}
+library(DiagrammeR)
+knitr::opts_chunk$set(eval = FALSE)
+```
 
 ## What is the User Interface?
 
@@ -74,7 +79,7 @@ Bootstrap 2.0 is a grid system for building layouts of all shapes and sizes. It'
 
 ### Bootstrap 2.0 Grid
 
-&lt;img src="images/bootstrap.png" style="width:100%;"/&gt;
+<img src="images/bootstrap.png" style="width:100%;"/>
 
 * Each webpage has 12 columns.
 * Each column of content must span integer number of subcolumns
@@ -97,7 +102,7 @@ Bootstrap 2.0 is a grid system for building layouts of all shapes and sizes. It'
 
 ### sidebarLayout
 
-&lt;img src="images/bootstrap-sidebar.png" style="height:70%;"/&gt;
+<img src="images/bootstrap-sidebar.png" style="height:70%;"/>
 
 ---
 
@@ -115,22 +120,21 @@ Bootstrap 2.0 is a grid system for building layouts of all shapes and sizes. It'
 
 ### Skeleton of sidebarLayout
 
-
-```r
+```{r eval = FALSE}
 library(shiny)
 
-ui &lt;- fluidPage(
+ui <- fluidPage(
   sidebarLayout(
     sidebarPanel(
-      *Input(&lt;inputId&gt;)
+      *Input(<inputId>)
     ),
     mainPanel(
-      *Output(&lt;outputId&gt;)
+      *Output(<outputId>)
     )
   )
 )
 
-server &lt;- function(input, output) { &lt;my-shiny-recipe&gt; }
+server <- function(input, output) { <my-shiny-recipe> }
 
 shinyApp(ui = ui, server = server)
 ```
@@ -155,7 +159,7 @@ Open `apps/ui-01.R`
 
 ### General Bootstrap Layout
 
-&lt;img src="images/bootstrap.png" style="width:100%;"/&gt;
+<img src="images/bootstrap.png" style="width:100%;"/>
 
 * Each of the columns __must__ span an __integer__ width
 * Height is responsively determined by Javascript
@@ -163,11 +167,10 @@ Open `apps/ui-01.R`
 
 ---
 
-### Example code of rows 3 &amp; 4
+### Example code of rows 3 & 4
 
-
-```r
-UI &lt;- fluidPage(
+```{r , eval = FALSE, echo = TRUE}
+UI <- fluidPage(
   fluidRow(
     column(4, object1),
     column(8, object2)
@@ -183,15 +186,14 @@ UI &lt;- fluidPage(
 
 ### More detailed example:
 
-&lt;img src="images/bootstrap-specific-grid.png" style="height:80%;"/&gt;
+<img src="images/bootstrap-specific-grid.png" style="height:80%;"/>
 
 ---
 
 ### Bootstrap code for last example
 
-
-```r
-ui &lt;- fluidPage(
+```{r eval = FALSE}
+ui <- fluidPage(
   fluidRow(
     column(6, object1),
     column(6, object2, object3)
@@ -217,7 +219,7 @@ Open `apps/ui-02.R`
 ### Goal Layout
 
 
-&lt;img src="images/bootstrap-exercise.png" style="width:100%;"/&gt;
+<img src="images/bootstrap-exercise.png" style="width:100%;"/>
 
 ---
 
@@ -229,7 +231,7 @@ Open `apps/sol-ui-02.R`
 
 ### Navbar Pages
 
-&lt;img src="images/navbar-example.png" style="width:100%;"/&gt;
+<img src="images/navbar-example.png" style="width:100%;"/>
 
 * App can be split into tabs.
 * Uses the bootstrap navbar setup
@@ -240,9 +242,8 @@ Open `apps/sol-ui-02.R`
 ### Skeleton of Navbar
 
 .pull-left[
-
-```r
-ui &lt;- navbarPage(title = "My Application",
+```{r eval = FALSE}
+ui <- navbarPage(title = "My Application",
   tabPanel("My Tab 1",
     *Input("input1")
     *Output("output1")
@@ -259,7 +260,7 @@ ui &lt;- navbarPage(title = "My Application",
 * Can place (nest) other UI layouts in each `tabPanel`]
 
 .pull-right[
-&lt;img src="images/navbar-exercise.png" style="width:75%;"/&gt;
+<img src="images/navbar-exercise.png" style="width:75%;"/>
 
 ]
 
@@ -273,14 +274,14 @@ Open `apps/ui-03.R`. Modify the UI to have three `tabPanels`
 * __Summary Ouptut__: Place the summary lm output here
 * __Data Table__: Place the dataTable output here.
 
-Don't forget to set the ui to be `ui &lt;- navbarPage(`
+Don't forget to set the ui to be `ui <- navbarPage(`
 
 ---
 
 ### Goal Layout
 
 
-&lt;img src="images/navbar-exercise.png" style="width:75%;"/&gt;
+<img src="images/navbar-exercise.png" style="width:75%;"/>
 
 ---
 
@@ -318,11 +319,10 @@ Open `apps/sol-ui-03.R`
     
 ### Set desired theme
 
-
-```r
+```{r eval = FALSE}
 library(shinythemes)
 
-ui &lt;- fluidPage(theme = shinytheme("cerulean"),
+ui <- fluidPage(theme = shinytheme("cerulean"),
   ...
 )
 ```
@@ -333,9 +333,8 @@ ui &lt;- fluidPage(theme = shinytheme("cerulean"),
 
 ### Live Theme selector
 
-
-```r
-ui &lt;- fluidPage(
+```{r eval = FALSE}
+ui <- fluidPage(
         shinythemes::themeSelector()
         ...
       )
@@ -352,100 +351,4 @@ Open your favourite app so far in `apps/` and customise the theme using the live
 
 * When you have chosen a theme. 
     - Stop the app
-    - Go back and set the theme (`theme = "&lt;mychoice&gt;"`).
-    </textarea>
-<style data-target="print-only">@media screen {.remark-slide-container{display:block;}.remark-slide-scaler{box-shadow:none;}}</style>
-<script src="https://remarkjs.com/downloads/remark-latest.min.js"></script>
-<script>var slideshow = remark.create({
-"slideNumberFormat": "<div class=\"progress-bar-container\">   <div class=\"progress-bar\" style=\"width: calc(%current% / %total% * 100%);\">   </div> </div>` ",
-"highlightStyle": "github",
-"highlightLines": true,
-"countIncrementalSlides": false,
-"ratio": "16:9",
-"navigation": {
-"scroll": false
-}
-});
-if (window.HTMLWidgets) slideshow.on('afterShowSlide', function (slide) {
-  window.dispatchEvent(new Event('resize'));
-});
-(function(d) {
-  var s = d.createElement("style"), r = d.querySelector(".remark-slide-scaler");
-  if (!r) return;
-  s.type = "text/css"; s.innerHTML = "@page {size: " + r.style.width + " " + r.style.height +"; }";
-  d.head.appendChild(s);
-})(document);
-
-(function(d) {
-  var el = d.getElementsByClassName("remark-slides-area");
-  if (!el) return;
-  var slide, slides = slideshow.getSlides(), els = el[0].children;
-  for (var i = 1; i < slides.length; i++) {
-    slide = slides[i];
-    if (slide.properties.continued === "true" || slide.properties.count === "false") {
-      els[i - 1].className += ' has-continuation';
-    }
-  }
-  var s = d.createElement("style");
-  s.type = "text/css"; s.innerHTML = "@media print { .has-continuation { display: none; } }";
-  d.head.appendChild(s);
-})(document);
-// delete the temporary CSS (for displaying all slides initially) when the user
-// starts to view slides
-(function() {
-  var deleted = false;
-  slideshow.on('beforeShowSlide', function(slide) {
-    if (deleted) return;
-    var sheets = document.styleSheets, node;
-    for (var i = 0; i < sheets.length; i++) {
-      node = sheets[i].ownerNode;
-      if (node.dataset["target"] !== "print-only") continue;
-      node.parentNode.removeChild(node);
-    }
-    deleted = true;
-  });
-})();</script>
-
-<script>
-(function() {
-  var links = document.getElementsByTagName('a');
-  for (var i = 0; i < links.length; i++) {
-    if (/^(https?:)?\/\//.test(links[i].getAttribute('href'))) {
-      links[i].target = '_blank';
-    }
-  }
-})();
-</script>
-
-<script>
-slideshow._releaseMath = function(el) {
-  var i, text, code, codes = el.getElementsByTagName('code');
-  for (i = 0; i < codes.length;) {
-    code = codes[i];
-    if (code.parentNode.tagName !== 'PRE' && code.childElementCount === 0) {
-      text = code.textContent;
-      if (/^\\\((.|\s)+\\\)$/.test(text) || /^\\\[(.|\s)+\\\]$/.test(text) ||
-          /^\$\$(.|\s)+\$\$$/.test(text) ||
-          /^\\begin\{([^}]+)\}(.|\s)+\\end\{[^}]+\}$/.test(text)) {
-        code.outerHTML = code.innerHTML;  // remove <code></code>
-        continue;
-      }
-    }
-    i++;
-  }
-};
-slideshow._releaseMath(document);
-</script>
-<!-- dynamically load mathjax for compatibility with self-contained -->
-<script>
-(function () {
-  var script = document.createElement('script');
-  script.type = 'text/javascript';
-  script.src  = 'https://mathjax.rstudio.com/latest/MathJax.js?config=TeX-MML-AM_CHTML';
-  if (location.protocol !== 'file:' && /^https?:/.test(script.src))
-    script.src  = script.src.replace(/^https?:/, '');
-  document.getElementsByTagName('head')[0].appendChild(script);
-})();
-</script>
-  </body>
-</html>
+    - Go back and set the theme (`theme = "<mychoice>"`).
